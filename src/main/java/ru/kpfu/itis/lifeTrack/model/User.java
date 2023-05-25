@@ -1,17 +1,18 @@
 package ru.kpfu.itis.lifeTrack.model;
 
 import lombok.*;
-import ru.kpfu.itis.lifeTrack.entity.RoleEntity;
+import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.itis.lifeTrack.entity.UserEntity;
+import ru.kpfu.itis.lifeTrack.model.Role;
 
-import java.util.Date;
 import java.util.Set;
+import java.util.Date;
+import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Slf4j
 public class User {
     private Long id;
     private String username;
@@ -23,6 +24,7 @@ public class User {
     private Set<Role> workflows;
 
     static public User toModel(UserEntity userEntity) {
+        log.debug("UserEntity was converted to model: " + userEntity.getWorkflows());
         return new User(
                 userEntity.getId(),
                 userEntity.getUsername(),

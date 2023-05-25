@@ -1,29 +1,21 @@
 package ru.kpfu.itis.lifeTrack.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.github.fge.jsonpatch.JsonPatch;
+import ru.kpfu.itis.lifeTrack.entity.UserEntity;
 import ru.kpfu.itis.lifeTrack.entity.WorkflowEntity;
+import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.exception.Workflow.WorkflowNotFoundException;
 import ru.kpfu.itis.lifeTrack.model.Workflow;
-import ru.kpfu.itis.lifeTrack.repository.WorkflowRepo;
 
-import java.util.Optional;
+public interface WorkflowService {
 
-@Service
-public class WorkflowService {
+    Workflow getWorkflow(Long id) throws WorkflowNotFoundException;
 
-    private final WorkflowRepo workflowRepo;
+    Workflow insertWorkflow(Long userId, WorkflowEntity workflowEntity) throws UserNotFoundException;
 
-    @Autowired
-    public WorkflowService(WorkflowRepo workflowRepo) {
-        this.workflowRepo = workflowRepo;
-    }
+    Workflow patchWorkflow(Long id, JsonPatch jsonPatch);
 
-    public Workflow getOne(Long id) throws WorkflowNotFoundException {
-        Optional<WorkflowEntity> workflowEntity = workflowRepo.findById(id);
-        if (workflowEntity.isEmpty()) {
-            throw new WorkflowNotFoundException("Workflow with this id does not exist");
-        }
-        return Workflow.toModel(workflowEntity.get());
-    }
+    Workflow updateWorkflow(Long id, UserEntity updatedWorkflowEntity);
+
+    Long deleteWorkflow(Long id);
 }

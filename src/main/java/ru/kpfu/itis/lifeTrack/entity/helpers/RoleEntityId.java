@@ -7,11 +7,9 @@ import lombok.*;
 import java.io.Serializable;
 
 @Embeddable
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RoleEntityId implements Serializable {
 
     @Column(name = "user_id")
@@ -19,4 +17,12 @@ public class RoleEntityId implements Serializable {
 
     @Column(name = "workflow_id")
     private Long workflowId;
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setWorkflowId(Long workflowId) {
+        this.workflowId = workflowId;
+    }
 }

@@ -3,11 +3,9 @@ package ru.kpfu.itis.lifeTrack.model;
 import lombok.*;
 import ru.kpfu.itis.lifeTrack.entity.WorkflowEntity;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Workflow {
     private Long id;
     private String summary;

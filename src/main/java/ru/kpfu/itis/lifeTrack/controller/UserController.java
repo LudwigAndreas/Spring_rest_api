@@ -12,17 +12,17 @@ import ru.kpfu.itis.lifeTrack.entity.UserEntity;
 import ru.kpfu.itis.lifeTrack.exception.User.UserAlreadyExistsException;
 import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.model.User;
-import ru.kpfu.itis.lifeTrack.service.UserService;
+import ru.kpfu.itis.lifeTrack.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -31,7 +31,7 @@ public class UserController {
     public ResponseEntity deleteUser(@PathVariable Long id) {
         log.debug("Deleting user: " + id);
         try {
-            return ResponseEntity.ok(userService.deleteUserById(id));
+            return ResponseEntity.ok(userService.deleteUser(id));
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity getUser(@PathVariable Long id) {
         log.debug("Getting user: " + id);
         try {
-            User user = userService.getUserById(id);
+            User user = userService.getUser(id);
             return ResponseEntity.ok(user);
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
