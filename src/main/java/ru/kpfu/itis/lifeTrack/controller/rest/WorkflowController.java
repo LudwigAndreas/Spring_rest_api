@@ -13,7 +13,6 @@ import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
 import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
 import ru.kpfu.itis.lifeTrack.service.impl.WorkflowServiceImpl;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -40,7 +39,7 @@ public class WorkflowController {
         try {
             return ResponseEntity.ok(workflowService.getWorkflow(userId, id));
         } catch (NotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -51,7 +50,7 @@ public class WorkflowController {
             WorkflowDto workflow = workflowService.insertWorkflow(user_id, workflowRequest);
             return ResponseEntity.ok(workflow);
         } catch (NotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
