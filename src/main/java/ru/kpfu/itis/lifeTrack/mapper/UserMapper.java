@@ -1,12 +1,12 @@
 package ru.kpfu.itis.lifeTrack.mapper;
 
 import org.mapstruct.Mapper;
-import ru.kpfu.itis.lifeTrack.entity.UserEntity;
-import ru.kpfu.itis.lifeTrack.model.User;
+import ru.kpfu.itis.lifeTrack.model.UserEntity;
+import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserEntity toUserEntity(User user);
+    UserEntity DtoToEntity(UserDto userDto);
 
-    User toUserModel(UserEntity userEntity);
+    UserDto EntityToDto(UserEntity userEntity);
 }

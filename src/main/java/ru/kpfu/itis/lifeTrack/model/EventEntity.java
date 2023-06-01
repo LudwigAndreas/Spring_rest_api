@@ -1,9 +1,11 @@
-package ru.kpfu.itis.lifeTrack.entity;
+package ru.kpfu.itis.lifeTrack.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Timestamp;
 
@@ -34,10 +36,12 @@ public class EventEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created")
+    @CreatedDate
     private Timestamp created;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated")
+    @LastModifiedDate
     private Timestamp updated;
 
     @Column(name = "creator", nullable = false)

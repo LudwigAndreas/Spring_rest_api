@@ -1,21 +1,25 @@
 package ru.kpfu.itis.lifeTrack.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
-import ru.kpfu.itis.lifeTrack.entity.UserEntity;
-import ru.kpfu.itis.lifeTrack.entity.WorkflowEntity;
+import com.github.fge.jsonpatch.JsonPatchException;
+import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
 import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
-import ru.kpfu.itis.lifeTrack.exception.Workflow.WorkflowNotFoundException;
-import ru.kpfu.itis.lifeTrack.model.Workflow;
+import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
+
+import java.util.Set;
 
 public interface WorkflowService {
 
-    Workflow getWorkflow(Long id) throws WorkflowNotFoundException;
+    Set<WorkflowDto> getWorkflowList(Long userId) throws UserNotFoundException;
 
-    Workflow insertWorkflow(Long userId, WorkflowEntity workflowEntity) throws UserNotFoundException;
+    WorkflowDto getWorkflow(Long userId, Long id) throws NotFoundException;
 
-    Workflow patchWorkflow(Long id, JsonPatch jsonPatch);
+    WorkflowDto insertWorkflow(Long userId, WorkflowDto request) throws NotFoundException;
 
-    Workflow updateWorkflow(Long id, UserEntity updatedWorkflowEntity);
+    WorkflowDto patchWorkflow(Long userId, Long id, JsonPatch jsonPatch) throws NotFoundException, JsonProcessingException, JsonPatchException;
 
-    Long deleteWorkflow(Long id);
+    WorkflowDto updateWorkflow(Long userId, Long id, WorkflowDto request) throws NotFoundException;
+
+    Long deleteWorkflow(Long userId, Long id) throws NotFoundException;
 }

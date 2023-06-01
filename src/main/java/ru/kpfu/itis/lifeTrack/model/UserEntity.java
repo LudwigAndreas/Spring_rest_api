@@ -1,8 +1,10 @@
-package ru.kpfu.itis.lifeTrack.entity;
+package ru.kpfu.itis.lifeTrack.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Date;
 import java.util.HashSet;
@@ -36,11 +38,13 @@ public class UserEntity {
 
     @Basic
     @Temporal(TemporalType.DATE)
+    @CreatedDate
     @Column(name = "created_date")
     private Date createdDate;
 
     @Basic
     @Temporal(TemporalType.DATE)
+    @LastModifiedDate
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
 

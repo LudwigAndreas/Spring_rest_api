@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.entity.helpers;
+package ru.kpfu.itis.lifeTrack.model.helpers;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -1,6 +1,8 @@
 package ru.kpfu.itis.lifeTrack.exception.Workflow;
 
-public class WorkflowNotFoundException extends Exception{
+import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
+
+public class WorkflowNotFoundException extends NotFoundException {
     public WorkflowNotFoundException(String message) {
         super(message);
     }

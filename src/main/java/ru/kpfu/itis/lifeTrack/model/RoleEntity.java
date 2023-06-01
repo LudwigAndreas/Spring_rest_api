@@ -1,9 +1,9 @@
-package ru.kpfu.itis.lifeTrack.entity;
+package ru.kpfu.itis.lifeTrack.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.kpfu.itis.lifeTrack.entity.helpers.AccessRole;
-import ru.kpfu.itis.lifeTrack.entity.helpers.RoleEntityId;
+import ru.kpfu.itis.lifeTrack.model.helpers.AccessRole;
+import ru.kpfu.itis.lifeTrack.model.helpers.RoleEntityId;
 
 @Entity
 @EqualsAndHashCode

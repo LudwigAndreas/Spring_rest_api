@@ -1,9 +1,8 @@
 package ru.kpfu.itis.lifeTrack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.kpfu.itis.lifeTrack.entity.UserEntity;
+import ru.kpfu.itis.lifeTrack.model.UserEntity;
 
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserRepo extends JpaRepository<UserEntity, Long> {

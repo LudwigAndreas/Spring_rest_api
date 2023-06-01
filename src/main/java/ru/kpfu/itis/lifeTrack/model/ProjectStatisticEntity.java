@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.entity;
+package ru.kpfu.itis.lifeTrack.model;
 
 
 import jakarta.persistence.*;
