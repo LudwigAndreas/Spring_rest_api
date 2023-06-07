@@ -3,7 +3,6 @@ package ru.kpfu.itis.lifeTrack.dto.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import ru.kpfu.itis.lifeTrack.model.UserEntity;
 
 import java.util.Date;
 
@@ -11,6 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
     private Long id;

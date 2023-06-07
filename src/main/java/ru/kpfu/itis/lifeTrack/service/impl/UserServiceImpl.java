@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import ru.kpfu.itis.lifeTrack.model.UserEntity;
 import ru.kpfu.itis.lifeTrack.exception.User.UserAlreadyExistsException;
 import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.UserMapper;
+import ru.kpfu.itis.lifeTrack.repository.RoleRepo;
 import ru.kpfu.itis.lifeTrack.repository.UserRepo;
 import ru.kpfu.itis.lifeTrack.service.UserService;
 
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserMapper userMapper;
+    private final RoleRepo roleRepo;
 
     @Override
     public UserDto insertUser(UserEntity user) throws UserAlreadyExistsException {
@@ -41,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("IN insertUser - user: {} successfully registered", user);
 
-        return userMapper.EntityToDto(userRepo.save(user));
+        return userMapper.entityToDto(userRepo.save(user));
     }
 
     @Override
@@ -52,7 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User with this id does not exist");
         }
 
-        UserDto out = userMapper.EntityToDto(userEntity.get());
+        UserDto out = userMapper.entityToDto(userEntity.get());
 
         log.info("IN getUser - user with id: {} successfully found", out.getId());
 
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User with this id does not exist");
         }
 
-        UserDto out = userMapper.EntityToDto(userEntity.get());
+        UserDto out = userMapper.entityToDto(userEntity.get());
 
         log.info("IN getUser - user with username: {} successfully found", username);
 
@@ -75,11 +78,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Long deleteUser(Long id) throws UserNotFoundException {
-        if (userRepo.findById(id).isEmpty()) {
+        Optional<UserEntity> optionalUser = userRepo.findById(id);
+        if (optionalUser.isEmpty()) {
             log.warn("IN deleteUser - user with id: {} was not found", id);
             throw new UserNotFoundException("User with this id does not exist");
         }
+        roleRepo.deleteAllByUser(optionalUser.get());
         userRepo.deleteById(id);
 
         log.info("IN deleteUser - user with id: {} successfully deleted", id);
@@ -100,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("IN patchUser - user with id: {} successfully patched", id);
 
-        return userMapper.EntityToDto(userRepo.save(objectMapper.treeToValue(patched, UserEntity.class)));
+        return userMapper.entityToDto(userRepo.save(objectMapper.treeToValue(patched, UserEntity.class)));
     }
 
     @Override
@@ -114,6 +120,6 @@ public class UserServiceImpl implements UserService {
 
         log.info("IN updateUser - user with id: {} was successfully updated", id);
 
-        return userMapper.EntityToDto(userRepo.save(updated));
+        return userMapper.entityToDto(userRepo.save(updated));
     }
 }

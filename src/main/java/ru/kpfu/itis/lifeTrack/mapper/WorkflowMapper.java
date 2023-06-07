@@ -6,6 +6,9 @@ import ru.kpfu.itis.lifeTrack.model.WorkflowEntity;
 
 @Mapper(componentModel = "spring")
 public interface WorkflowMapper {
-    WorkflowEntity toEntity(WorkflowDto workflowDto);
-    WorkflowDto toDto(WorkflowEntity workflowEntity);
+
+    WorkflowEntity dtoToEntity(WorkflowDto workflowDto);
+
+    WorkflowDto entityToDto(WorkflowEntity workflowEntity);
+
 }

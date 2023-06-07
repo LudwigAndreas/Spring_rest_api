@@ -5,12 +5,12 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kpfu.itis.lifeTrack.dto.response.ProjectDto;
-import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
+import ru.kpfu.itis.lifeTrack.dto.request.ProjectRequestDto;
+import ru.kpfu.itis.lifeTrack.dto.response.ProjectResponseDto;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
-import ru.kpfu.itis.lifeTrack.model.ProjectEntity;
 import ru.kpfu.itis.lifeTrack.service.ProjectService;
 
 import java.util.Set;
@@ -22,18 +22,18 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @GetMapping
-    public ResponseEntity getAllProjects(@PathVariable(name = "user_id") Long userId,
+    @GetMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getProjectsList(@PathVariable(name = "user_id") Long userId,
                                          @PathVariable(name = "workflow_id") Long workflowId) {
         try {
-            Set<ProjectEntity> projectEntitySet = projectService.getProjectList(userId, workflowId);
+            Set<ProjectResponseDto> projectEntitySet = projectService.getProjectList(userId, workflowId);
             return new ResponseEntity<>(projectEntitySet, HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getProject(@PathVariable(name = "user_id") Long userId,
                                      @PathVariable(name = "workflow_id") Long workflowId,
                                      @PathVariable Long id) {
@@ -47,9 +47,9 @@ public class ProjectController {
     @PostMapping()
     public ResponseEntity insertProject(@PathVariable(name = "user_id") Long userId,
                                         @PathVariable(name = "workflow_id") Long workflowId,
-                                        @RequestBody ProjectDto projectRequest) {
+                                        @RequestBody ProjectRequestDto projectRequest) {
         try {
-            ProjectDto projectDto = projectService.insertProject(userId, workflowId, projectRequest);
+            ProjectResponseDto projectDto = projectService.insertProject(userId, workflowId, projectRequest);
             return ResponseEntity.ok(projectDto);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,7 +62,7 @@ public class ProjectController {
                                        @PathVariable Long id,
                                        @RequestBody JsonPatch patch) {
         try {
-            ProjectDto projectDto = projectService.patchProject(userId, workflowId, id, patch);
+            ProjectResponseDto projectDto = projectService.patchProject(userId, workflowId, id, patch);
             return new ResponseEntity<>(projectDto, HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -75,9 +75,9 @@ public class ProjectController {
     public ResponseEntity updateProject(@PathVariable(name = "user_id") Long userId,
                                         @PathVariable(name = "workflow_id") Long workflowId,
                                         @PathVariable Long id,
-                                        @RequestBody ProjectDto projectRequest) {
+                                        @RequestBody ProjectRequestDto projectRequest) {
         try {
-            ProjectDto projectDto = projectService.updateProject(userId, workflowId, id,  projectRequest);
+            ProjectResponseDto projectDto = projectService.updateProject(userId, workflowId, id,  projectRequest);
             return new ResponseEntity<>(projectDto, HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

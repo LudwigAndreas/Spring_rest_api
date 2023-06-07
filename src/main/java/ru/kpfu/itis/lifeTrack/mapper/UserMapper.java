@@ -6,7 +6,9 @@ import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserEntity DtoToEntity(UserDto userDto);
 
-    UserDto EntityToDto(UserEntity userEntity);
+    UserEntity dtoToEntity(UserDto userDto);
+
+    UserDto entityToDto(UserEntity userEntity);
+
 }

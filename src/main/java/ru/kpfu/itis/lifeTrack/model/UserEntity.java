@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@Builder
 @Table(name = "users")
 public class UserEntity {
     @Id
@@ -48,6 +49,6 @@ public class UserEntity {
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<RoleEntity> workflows = new HashSet<>();
 }

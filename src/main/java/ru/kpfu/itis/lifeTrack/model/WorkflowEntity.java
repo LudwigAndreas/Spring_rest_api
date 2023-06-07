@@ -9,6 +9,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "workflow")
 public class WorkflowEntity {
     @Id
@@ -30,7 +31,10 @@ public class WorkflowEntity {
     @Column(name = "color", length = 7)
     private String color;
 
-    @OneToMany(mappedBy = "workflow")
+    @OneToMany(mappedBy = "workflow", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<RoleEntity> authorized;
+
+    @OneToMany(mappedBy = "workflow", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<ProjectEntity> projects;
 
 }
