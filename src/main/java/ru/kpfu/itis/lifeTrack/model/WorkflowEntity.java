@@ -3,6 +3,7 @@ package ru.kpfu.itis.lifeTrack.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -37,4 +38,16 @@ public class WorkflowEntity {
     @OneToMany(mappedBy = "workflow", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ProjectEntity> projects;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WorkflowEntity that = (WorkflowEntity) o;
+        return getId().equals(that.getId()) && Objects.equals(gCalId, that.gCalId) && Objects.equals(getSummary(), that.getSummary()) && Objects.equals(getDescription(), that.getDescription()) && Objects.equals(getTimezone(), that.getTimezone()) && Objects.equals(getColor(), that.getColor()) && Objects.equals(getAuthorized(), that.getAuthorized()) && Objects.equals(getProjects(), that.getProjects());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), gCalId, getSummary(), getDescription(), getTimezone(), getColor());
+    }
 }

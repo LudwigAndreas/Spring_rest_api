@@ -7,6 +7,8 @@ import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    UserEntity longToEntity(Long id);
+
     UserEntity dtoToEntity(UserDto userDto);
 
     UserDto entityToDto(UserEntity userEntity);

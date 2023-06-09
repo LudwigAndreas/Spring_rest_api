@@ -21,6 +21,6 @@ public class EventRequestDto {
     private Timestamp userStart;
     private Timestamp userEnd;
     private Boolean finished;
-    private String recurrence;
+    private String[] recurrence;
     private String color;
 }

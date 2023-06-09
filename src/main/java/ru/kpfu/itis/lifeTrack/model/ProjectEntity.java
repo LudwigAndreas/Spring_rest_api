@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -18,10 +21,6 @@ public class ProjectEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "workflow_id")
-    private WorkflowEntity workflow;
-
     @Column(name = "summary", length = 254)
     private String summary;
 
@@ -31,4 +30,23 @@ public class ProjectEntity {
     @Column(name = "color", length = 7)
     private String color;
 
+    @OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<EventEntity> eventList;
+
+    @ManyToOne
+    @JoinColumn(name = "workflow_id")
+    private WorkflowEntity workflow;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProjectEntity project = (ProjectEntity) o;
+        return getId().equals(project.getId()) && Objects.equals(getSummary(), project.getSummary()) && Objects.equals(getDescription(), project.getDescription()) && Objects.equals(getColor(), project.getColor()) && Objects.equals(getEventList(), project.getEventList()) && Objects.equals(getWorkflow(), project.getWorkflow());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSummary(), getDescription(), getColor());
+    }
 }

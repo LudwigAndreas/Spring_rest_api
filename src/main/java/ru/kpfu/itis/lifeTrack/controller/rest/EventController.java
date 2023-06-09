@@ -88,7 +88,7 @@ public class EventController {
         }
     }
 
-    @PutMapping
+    @PutMapping("{id}")
     public ResponseEntity updateEvent(@PathVariable(name = "user_id") Long userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
@@ -106,7 +106,7 @@ public class EventController {
     public ResponseEntity deleteEvent(@PathVariable(name = "user_id") Long userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
-                                      @PathVariable Long id) {
+                                      @PathVariable(name = "id") Long id) {
         try {
             Long deleted = eventService.deleteEvent(userId, workflowId, projectId, id);
             return new ResponseEntity(deleted, HttpStatus.OK);

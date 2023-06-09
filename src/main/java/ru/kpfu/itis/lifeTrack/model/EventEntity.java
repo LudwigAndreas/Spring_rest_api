@@ -1,18 +1,21 @@
 package ru.kpfu.itis.lifeTrack.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
+@ToString
 @AllArgsConstructor
 @Builder
 @Table(name = "event")
@@ -21,8 +24,9 @@ public class EventEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "project_id", nullable = false)
-    private Long project_id;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private ProjectEntity project;
 
     @Column(name = "gcal_event_id", length = 32)
     private String googleEventId;
@@ -36,18 +40,19 @@ public class EventEntity {
     @Column(name = "description")
     private String description;
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created")
-    @CreatedDate
     private Timestamp created;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated")
-    @LastModifiedDate
+    @UpdateTimestamp
     private Timestamp updated;
 
-    @Column(name = "creator", nullable = false)
-    private Long creator;
+    @ManyToOne
+    @JoinColumn(name = "creator")
+    private UserEntity creator;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "schedule_start")
@@ -68,12 +73,28 @@ public class EventEntity {
     @Column(name = "finished", nullable = false)
     private Boolean finished;
 
-    @Column(name = "recurrence")
-    private String recurrence;
+    @Column(name = "recurrence", columnDefinition = "string[]")
+    private String[] recurrence;
 
     @Column(name = "recurring_event_id")
     private Long recurringEventId;
 
     @Column(name = "color")
     private String color;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EventEntity event = (EventEntity) o;
+        return getId().equals(event.getId()) && Objects.equals(getGoogleEventId(), event.getGoogleEventId()) && Objects.equals(iCalendarUID, event.iCalendarUID) && Objects.equals(getSummary(), event.getSummary()) && Objects.equals(getDescription(), event.getDescription()) && Objects.equals(getCreated(), event.getCreated()) && Objects.equals(getUpdated(), event.getUpdated()) && Objects.equals(getPlanStart(), event.getPlanStart()) && Objects.equals(getPlanEnd(), event.getPlanEnd()) && Objects.equals(getUserStart(), event.getUserStart()) && Objects.equals(getUserEnd(), event.getUserEnd()) && getFinished().equals(event.getFinished()) && Arrays.equals(getRecurrence(), event.getRecurrence()) && Objects.equals(getRecurringEventId(), event.getRecurringEventId()) && Objects.equals(getColor(), event.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getId(), getGoogleEventId(), iCalendarUID, getSummary(), getDescription(), getCreated(), getUpdated(), getPlanStart(), getPlanEnd(), getUserStart(), getUserEnd(), getFinished(), getRecurringEventId(), getColor());
+        result = 31 * result + Arrays.hashCode(getRecurrence());
+        return result;
+    }
+
 }

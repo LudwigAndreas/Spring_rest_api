@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @Builder
 public class EventResponseDto {
     private Long id;
-    private Long project_id;
+    private Long projectId;
     private String googleEventId;
     private String iCalendarUID;
     private String summary;
@@ -29,7 +29,7 @@ public class EventResponseDto {
     private Timestamp userStart;
     private Timestamp userEnd;
     private Boolean finished;
-    private String recurrence;
+    private String[] recurrence;
     private Long recurringEventId;
     private String color;
 }
