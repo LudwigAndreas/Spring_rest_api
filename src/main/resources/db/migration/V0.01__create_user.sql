@@ -1,25 +1,20 @@
-CREATE SEQUENCE seq_users_id
-    START 1;
 
 CREATE TABLE users (
-    id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('seq_users_id') ,
-    username VARCHAR(32) NOT NULL UNIQUE ,
-    firstname VARCHAR(32) ,
-    lastname VARCHAR(32) ,
-    email VARCHAR(64) NOT NULL UNIQUE ,
-    password VARCHAR(32) NOT NULL ,
-    created_date DATE DEFAULT CURRENT_DATE,
-    last_updated_date DATE DEFAULT CURRENT_DATE
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    username VARCHAR(32) NOT NULL UNIQUE,
+    firstname VARCHAR(32),
+    lastname VARCHAR(32),
+    userpic VARCHAR ,
+    email VARCHAR(64) NOT NULL UNIQUE,
+    password VARCHAR(128) NOT NULL,
+    created_date DATE DEFAULT CURRENT_DATE NOT NULL ,
+    last_updated_date DATE DEFAULT CURRENT_DATE NOT NULL
 );
 
--- COMMENT ON TABLE users IS 'Таблица пользователей';
--- COMMENT ON COLUMN users.id IS 'Идентификатор';
--- COMMENT ON COLUMN users.username IS 'Идентификатор';
--- COMMENT ON COLUMN users.firstname IS 'Идентификатор';
--- COMMENT ON COLUMN users.lastname IS 'Идентификатор';
--- COMMENT ON COLUMN users.email IS 'Идентификатор';
--- COMMENT ON COLUMN users.password IS 'Идентификатор';
--- COMMENT ON COLUMN users.created IS 'Идентификатор';
+CREATE TABLE refresh_token (
+    id VARCHAR(50) PRIMARY KEY NOT NULL ,
+    user_id VARCHAR(50) NOT NULL
+);
 
 CREATE SEQUENCE seq_workflow_id
     START 1;
@@ -33,12 +28,15 @@ CREATE TABLE workflow (
    color VARCHAR(7)
 );
 
-CREATE TYPE enum_access_role AS ENUM ('none', 'reader', 'writer', 'owner');
+CREATE TABLE workflow_role_name (
+    id BIGSERIAL PRIMARY KEY ,
+    name varchar(32) UNIQUE
+);
 
 CREATE TABLE workflow_user_access_role (
-    user_id BIGINT REFERENCES users(id) NOT NULL ,
+    user_id VARCHAR(50) REFERENCES users(id) NOT NULL ,
     workflow_id BIGINT REFERENCES workflow(id) NOT NULL ,
-    role enum_access_role DEFAULT 'none' NOT NULL
+    role BIGINT REFERENCES workflow_role_name(id) NOT NULL
 );
 
 CREATE SEQUENCE seq_project_id
@@ -69,19 +67,19 @@ CREATE SEQUENCE seq_event_id
 CREATE TABLE event (
     id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('seq_event_id') ,
     project_id BIGINT REFERENCES project(id) NOT NULL ,
-    gcal_event_id VARCHAR(32) ,
-    ical_uid VARCHAR(26) ,
+    gcal_event_id VARCHAR(32),
+    ical_uid VARCHAR(26),
     summary VARCHAR(254) NOT NULL,
     description VARCHAR CHECK (length(description) <= 8192),
-    created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP ,
-    updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP ,
-    creator BIGINT REFERENCES users(id) NOT NULL ,
-    schedule_start TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP ,
-    schedule_end TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    user_start TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP ,
-    user_end TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL ,
+    updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL ,
+    creator VARCHAR(50) REFERENCES users(id) NOT NULL,
+    schedule_start TIMESTAMP WITH TIME ZONE,
+    schedule_end TIMESTAMP WITH TIME ZONE,
+    user_start TIMESTAMP WITH TIME ZONE,
+    user_end TIMESTAMP WITH TIME ZONE,
     finished BOOLEAN NOT NULL DEFAULT FALSE,
     recurrence TEXT[],
-    recurring_event_id BIGINT REFERENCES event(id) NOT NULL,
+    recurring_event_id BIGINT REFERENCES event(id),
     color VARCHAR(7)
 );

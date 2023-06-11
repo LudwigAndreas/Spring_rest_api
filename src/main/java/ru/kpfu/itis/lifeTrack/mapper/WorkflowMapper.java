@@ -2,7 +2,7 @@ package ru.kpfu.itis.lifeTrack.mapper;
 
 import org.mapstruct.Mapper;
 import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
-import ru.kpfu.itis.lifeTrack.model.WorkflowEntity;
+import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowEntity;
 
 @Mapper(componentModel = "spring")
 public interface WorkflowMapper {

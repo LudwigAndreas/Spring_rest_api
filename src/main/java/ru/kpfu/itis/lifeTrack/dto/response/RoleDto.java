@@ -3,8 +3,7 @@ package ru.kpfu.itis.lifeTrack.dto.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import ru.kpfu.itis.lifeTrack.model.RoleEntity;
-import ru.kpfu.itis.lifeTrack.model.helpers.AccessRole;
+import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowAccessRoleEntity;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,23 +14,23 @@ import java.util.stream.Collectors;
 @Slf4j
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RoleDto {
-    private Long userId;
+    private String userId;
     private Long workflowId;
-    private AccessRole role;
+    private String role;
 
-    static public RoleDto toModel(RoleEntity roleEntity) {
+    static public RoleDto toModel(WorkflowAccessRoleEntity workflowAccessRoleEntity) {
         return new RoleDto(
-                roleEntity.getUser().getId(),
-                roleEntity.getWorkflow().getId(),
-                roleEntity.getRole()
+                workflowAccessRoleEntity.getUser().getId(),
+                workflowAccessRoleEntity.getWorkflow().getId(),
+                workflowAccessRoleEntity.getRole().getName()
         );
     }
 
-    static public Set<RoleDto> toModel(Set<RoleEntity> roleEntitySet) {
+    static public Set<RoleDto> toModel(Set<WorkflowAccessRoleEntity> workflowAccessRoleEntitySet) {
         log.debug("RoleEntitySet was converted to model");
-        if (!roleEntitySet.isEmpty()) {
+        if (!workflowAccessRoleEntitySet.isEmpty()) {
             log.info("RoleEntitySet is not empty");
-            return roleEntitySet.stream().map(RoleDto::toModel).collect(Collectors.toSet());
+            return workflowAccessRoleEntitySet.stream().map(RoleDto::toModel).collect(Collectors.toSet());
         } else {
             log.info("RoleEntitySet is empty");
             return null;

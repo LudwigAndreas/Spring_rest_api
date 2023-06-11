@@ -15,14 +15,14 @@ import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.EventMapper;
 import ru.kpfu.itis.lifeTrack.model.EventEntity;
 import ru.kpfu.itis.lifeTrack.model.ProjectEntity;
-import ru.kpfu.itis.lifeTrack.model.UserEntity;
+import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.repository.EventRepo;
 import ru.kpfu.itis.lifeTrack.repository.ProjectRepo;
 import ru.kpfu.itis.lifeTrack.repository.UserRepo;
 import ru.kpfu.itis.lifeTrack.service.EventService;
 
-import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Service
@@ -38,21 +38,21 @@ public class EventServiceImpl implements EventService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Set<EventResponseDto> getEventList(Long userId, Long workflowId, Long projectId) throws NotFoundException {
+    public Set<EventResponseDto> getEventList(String userId, Long workflowId, Long projectId) throws NotFoundException {
         ProjectEntity projectEntity = projectRepo.findByWorkflowIdAndId(workflowId, projectId).orElseThrow(() -> new NotFoundException("Relation between workflow and project was not found"));
         Set<EventEntity> eventSet = eventRepo.findAllByProject(projectEntity);
         return eventMapper.entitySetToResponseDtoSet(eventSet);
     }
 
     @Override
-    public EventResponseDto getEvent(Long userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException {
+    public EventResponseDto getEvent(String userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException {
         ProjectEntity projectEntity = projectRepo.findByWorkflowIdAndId(workflowId, projectId).orElseThrow(() -> new NotFoundException("Relation between workflow and project was not found"));
         EventEntity event = eventRepo.findByProjectAndId(projectEntity, eventId).orElseThrow(() -> new NotFoundException("Event was not found"));
         return eventMapper.entityToResponseDto(event);
     }
 
     @Override
-    public EventResponseDto insertEvent(Long userId, Long workflowId, Long projectId, EventRequestDto requestDto) throws NotFoundException {
+    public EventResponseDto insertEvent(String userId, Long workflowId, Long projectId, EventRequestDto requestDto) throws NotFoundException {
         ProjectEntity projectEntity = projectRepo.findByWorkflowIdAndId(workflowId, projectId).orElseThrow(() -> new NotFoundException("Relation between workflow and project was not found"));
         EventEntity eventEntity = eventMapper.requestDtoToEntity(requestDto);
         UserEntity user = userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException("User was not found"));
@@ -63,12 +63,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventResponseDto moveEvent(Long userId, Long workflowId, Long projectId, Long eventId, String destination) throws NotFoundException {
+    public EventResponseDto moveEvent(String userId, Long workflowId, Long projectId, Long eventId, String destination) throws NotFoundException {
         return null;
     }
 
     @Override
-    public EventResponseDto patchEvent(Long userId, Long workflowId, Long projectId, Long eventId, JsonPatch patch) throws NotFoundException, JsonProcessingException, JsonPatchException {
+    public EventResponseDto patchEvent(String userId, Long workflowId, Long projectId, Long eventId, JsonPatch patch) throws NotFoundException, JsonProcessingException, JsonPatchException {
         ProjectEntity projectEntity = projectRepo.findByWorkflowIdAndId(workflowId, projectId).orElseThrow(() -> new NotFoundException("Relation between workflow and project was not found"));
         EventEntity eventEntity = eventRepo.findByProjectAndId(projectEntity, eventId).orElseThrow(() -> new NotFoundException("Event was not found"));
 
@@ -78,7 +78,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventResponseDto updateEvent(Long userId, Long workflowId, Long projectId, Long eventId, EventRequestDto requestDto) throws NotFoundException {
+    public EventResponseDto updateEvent(String userId, Long workflowId, Long projectId, Long eventId, EventRequestDto requestDto) throws NotFoundException {
         ProjectEntity projectEntity = projectRepo.findByWorkflowIdAndId(workflowId, projectId).orElseThrow(() -> new NotFoundException("Relation between workflow and project was not found"));
         EventEntity origin = eventRepo.findByProjectAndId(projectEntity, eventId).orElseThrow(() -> new NotFoundException("Event was not found"));
         EventEntity updated = eventMapper.requestDtoToEntity(requestDto);
@@ -91,7 +91,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Long deleteEvent(Long userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException {
+    public Long deleteEvent(String userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException {
         ProjectEntity projectEntity = projectRepo.findByWorkflowIdAndId(workflowId, projectId).orElseThrow(() -> new NotFoundException("Relation between workflow and project was not found"));
         EventEntity eventEntity = eventRepo.findByProjectAndId(projectEntity, eventId).orElseThrow(() -> new NotFoundException("Event was not found"));
         eventRepo.delete(eventEntity);

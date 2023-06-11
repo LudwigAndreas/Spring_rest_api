@@ -16,7 +16,7 @@ import ru.kpfu.itis.lifeTrack.service.impl.WorkflowServiceImpl;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/users/{user_id}/workflows")
+@RequestMapping("/users/{userId}/workflows")
 @Slf4j
 @RequiredArgsConstructor
 public class WorkflowController {
@@ -24,9 +24,9 @@ public class WorkflowController {
     private final WorkflowServiceImpl workflowService;
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getWorkflowList(@PathVariable Long user_id) {
+    public ResponseEntity getWorkflowList(@PathVariable(name = "userId") String userId) {
         try {
-            Set<WorkflowDto> workflowDtoList = workflowService.getWorkflowList(user_id);
+            Set<WorkflowDto> workflowDtoList = workflowService.getWorkflowList(userId);
             return new ResponseEntity<>(workflowDtoList, HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -34,7 +34,7 @@ public class WorkflowController {
     }
 
     @GetMapping(value ="{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getWorkflow(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity getWorkflow(@PathVariable(name = "userId") String userId,
                                       @PathVariable Long id) {
         try {
             return ResponseEntity.ok(workflowService.getWorkflow(userId, id));
@@ -44,10 +44,10 @@ public class WorkflowController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity insertWorkflow(@PathVariable Long user_id,
+    public ResponseEntity insertWorkflow(@PathVariable(name = "userId") String userId,
                                          @RequestBody WorkflowDto workflowRequest) {
         try {
-            WorkflowDto workflow = workflowService.insertWorkflow(user_id, workflowRequest);
+            WorkflowDto workflow = workflowService.insertWorkflow(userId, workflowRequest);
             return ResponseEntity.ok(workflow);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -56,11 +56,11 @@ public class WorkflowController {
 
 
     @RequestMapping(value = "{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity patchWorkflow(@PathVariable Long user_id,
+    public ResponseEntity patchWorkflow(@PathVariable(name = "userId") String userId,
                                         @PathVariable Long id,
                                         @RequestBody JsonPatch patch) {
         try {
-            WorkflowDto workflowDto = workflowService.patchWorkflow(user_id, id, patch);
+            WorkflowDto workflowDto = workflowService.patchWorkflow(userId, id, patch);
             return new ResponseEntity<>(workflowDto, HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -70,7 +70,7 @@ public class WorkflowController {
     }
 
     @PutMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateWorkflow(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity updateWorkflow(@PathVariable(name = "userId") String userId,
                                          @PathVariable Long id,
                                          @RequestBody WorkflowDto workflowRequest) {
         try {
@@ -82,7 +82,7 @@ public class WorkflowController {
     }
 
     @DeleteMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity deleteWorkflow(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity deleteWorkflow(@PathVariable(name = "userId") String userId,
                                          @PathVariable Long id) {
         try {
             return new ResponseEntity<>(workflowService.deleteWorkflow(userId, id), HttpStatus.OK);

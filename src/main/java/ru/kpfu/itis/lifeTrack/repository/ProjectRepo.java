@@ -2,7 +2,7 @@ package ru.kpfu.itis.lifeTrack.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.kpfu.itis.lifeTrack.model.ProjectEntity;
-import ru.kpfu.itis.lifeTrack.model.WorkflowEntity;
+import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowEntity;
 
 import java.util.Optional;
 import java.util.Set;

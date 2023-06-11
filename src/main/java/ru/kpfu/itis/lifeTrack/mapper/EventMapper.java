@@ -12,7 +12,7 @@ import java.util.Set;
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface EventMapper {
 
-//    @Mapping(source = "creator", target = "creator")
+    @Mapping(source = "creator", target = "creator.id")
     @Mapping(source = "projectId", target = "project.id")
     EventEntity responseDtoToEntity(EventResponseDto responseDto);
 

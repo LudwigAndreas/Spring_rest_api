@@ -1,2 +1,0 @@
-ALTER TABLE users
-    ALTER COLUMN created_date SET NOT NULL;

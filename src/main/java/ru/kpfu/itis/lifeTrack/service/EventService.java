@@ -11,17 +11,17 @@ import java.util.Set;
 
 public interface EventService {
 
-    Set<EventResponseDto> getEventList(Long userId, Long workflowId, Long projectId) throws NotFoundException;
+    Set<EventResponseDto> getEventList(String userId, Long workflowId, Long projectId) throws NotFoundException;
 
-    EventResponseDto getEvent(Long userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException;
+    EventResponseDto getEvent(String userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException;
 
-    EventResponseDto insertEvent(Long userId, Long workflowId, Long projectId, EventRequestDto requestDto) throws NotFoundException;
+    EventResponseDto insertEvent(String userId, Long workflowId, Long projectId, EventRequestDto requestDto) throws NotFoundException;
 
-    EventResponseDto moveEvent(Long userId, Long workflowId, Long projectId, Long eventId, String destination) throws NotFoundException;
+    EventResponseDto moveEvent(String userId, Long workflowId, Long projectId, Long eventId, String destination) throws NotFoundException;
 
-    EventResponseDto patchEvent(Long userId, Long workflowId, Long projectId, Long eventId, JsonPatch patch) throws NotFoundException, JsonProcessingException, JsonPatchException;
+    EventResponseDto patchEvent(String userId, Long workflowId, Long projectId, Long eventId, JsonPatch patch) throws NotFoundException, JsonProcessingException, JsonPatchException;
 
-    EventResponseDto updateEvent(Long userId, Long workflowId, Long projectId, Long eventId, EventRequestDto requestDto) throws NotFoundException;
+    EventResponseDto updateEvent(String userId, Long workflowId, Long projectId, Long eventId, EventRequestDto requestDto) throws NotFoundException;
 
-    Long deleteEvent(Long userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException;
+    Long deleteEvent(String userId, Long workflowId, Long projectId, Long eventId) throws NotFoundException;
 }

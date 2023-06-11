@@ -10,18 +10,18 @@ import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
 import java.util.Set;
 
 public interface ProjectService {
-    Set<ProjectResponseDto> getProjectList(Long userId) throws NotFoundException;
+    Set<ProjectResponseDto> getProjectList(String userId) throws NotFoundException;
 
-    Set<ProjectResponseDto> getProjectList(Long userId, Long workflowId) throws NotFoundException;
+    Set<ProjectResponseDto> getProjectList(String userId, Long workflowId) throws NotFoundException;
 
-    ProjectResponseDto getProject(Long userId, Long workflowId, Long projectId) throws NotFoundException;
+    ProjectResponseDto getProject(String userId, Long workflowId, Long projectId) throws NotFoundException;
 
-    ProjectResponseDto insertProject(Long userId, Long workflowId, ProjectRequestDto projectDto) throws NotFoundException;
+    ProjectResponseDto insertProject(String userId, Long workflowId, ProjectRequestDto projectDto) throws NotFoundException;
 
-    ProjectResponseDto patchProject(Long userId, Long workflowId, Long projectId, JsonPatch patch) throws NotFoundException, JsonPatchException, JsonProcessingException;
+    ProjectResponseDto patchProject(String userId, Long workflowId, Long projectId, JsonPatch patch) throws NotFoundException, JsonPatchException, JsonProcessingException;
 
-    ProjectResponseDto updateProject(Long userId, Long workflowId, Long projectId, ProjectRequestDto update) throws NotFoundException;
+    ProjectResponseDto updateProject(String userId, Long workflowId, Long projectId, ProjectRequestDto update) throws NotFoundException;
 
-    Long deleteProject(Long userId, Long workflowId, Long projectId) throws NotFoundException;
+    Long deleteProject(String userId, Long workflowId, Long projectId) throws NotFoundException;
 
 }

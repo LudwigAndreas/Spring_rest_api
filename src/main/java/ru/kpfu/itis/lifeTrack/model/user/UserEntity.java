@@ -1,26 +1,28 @@
-package ru.kpfu.itis.lifeTrack.model;
+package ru.kpfu.itis.lifeTrack.model.user;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowAccessRoleEntity;
 
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
-@Builder
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "username", length = 32, nullable = false, unique = true)
     private String username;
@@ -34,21 +36,24 @@ public class UserEntity {
     @Column(name = "email", length = 64, nullable = false, unique = true)
     private String email;
 
+    @Column(name = "userpic")
+    private String userPicture;
+
     @Column(name = "password", length = 32, nullable = false)
     private String password;
 
-    @Basic
-    @Temporal(TemporalType.DATE)
-    @CreatedDate
     @Column(name = "created_date")
+    @CreatedDate
     private Date createdDate;
 
-    @Basic
-    @Temporal(TemporalType.DATE)
-    @LastModifiedDate
     @Column(name = "last_updated_date")
+    @LastModifiedDate
     private Date lastUpdatedDate;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<RoleEntity> workflows = new HashSet<>();
+    private Set<WorkflowAccessRoleEntity> workflows = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner")
+    private List<RefreshTokenEntity> tokens;
+
 }

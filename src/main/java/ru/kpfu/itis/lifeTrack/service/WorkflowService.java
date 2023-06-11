@@ -11,15 +11,15 @@ import java.util.Set;
 
 public interface WorkflowService {
 
-    Set<WorkflowDto> getWorkflowList(Long userId) throws UserNotFoundException;
+    Set<WorkflowDto> getWorkflowList(String userId) throws UserNotFoundException;
 
-    WorkflowDto getWorkflow(Long userId, Long id) throws NotFoundException;
+    WorkflowDto getWorkflow(String userId, Long id) throws NotFoundException;
 
-    WorkflowDto insertWorkflow(Long userId, WorkflowDto request) throws NotFoundException;
+    WorkflowDto insertWorkflow(String userId, WorkflowDto request) throws NotFoundException;
 
-    WorkflowDto patchWorkflow(Long userId, Long id, JsonPatch jsonPatch) throws NotFoundException, JsonProcessingException, JsonPatchException;
+    WorkflowDto patchWorkflow(String userId, Long id, JsonPatch jsonPatch) throws NotFoundException, JsonProcessingException, JsonPatchException;
 
-    WorkflowDto updateWorkflow(Long userId, Long id, WorkflowDto request) throws NotFoundException;
+    WorkflowDto updateWorkflow(String userId, Long id, WorkflowDto request) throws NotFoundException;
 
-    Long deleteWorkflow(Long userId, Long id) throws NotFoundException;
+    Long deleteWorkflow(String userId, Long id) throws NotFoundException;
 }

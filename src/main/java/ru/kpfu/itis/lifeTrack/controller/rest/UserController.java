@@ -10,9 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
-import ru.kpfu.itis.lifeTrack.model.UserEntity;
+import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.exception.User.UserAlreadyExistsException;
 import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.service.UserService;
 import ru.kpfu.itis.lifeTrack.service.impl.UserServiceImpl;
 
 @RestController
@@ -20,17 +21,17 @@ import ru.kpfu.itis.lifeTrack.service.impl.UserServiceImpl;
 @Slf4j
 public class UserController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
-    @GetMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    @GetMapping(value = "{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUser(@PathVariable(name = "userId") String userId) {
         try {
-            UserDto userDto = userService.getUser(id);
+            UserDto userDto = userService.getUser(userId);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> insertUser(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<?> insertUser(@RequestBody UserEntity userEntity) {
         try {
             UserDto userDto = userService.insertUser(userEntity);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
@@ -47,11 +48,11 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> patchUser(@PathVariable Long id,
+    @RequestMapping(value = "{userId}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> patchUser(@PathVariable(name = "userId") String userId,
                                              @RequestBody JsonPatch jsonPatch) {
         try {
-            UserDto user = userService.patchUser(id, jsonPatch);
+            UserDto user = userService.patchUser(userId, jsonPatch);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -60,21 +61,21 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id,
+    @PutMapping(value = "{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@PathVariable(name = "userId") String userId,
                                               @RequestBody UserEntity updated) {
         try {
-            UserDto user = userService.updateUser(id, updated);
+            UserDto user = userService.updateUser(userId, updated);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Long> deleteUser(@PathVariable Long id) {
+    @DeleteMapping(value = "{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") String userId) {
         try {
-            return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.OK);
+            return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

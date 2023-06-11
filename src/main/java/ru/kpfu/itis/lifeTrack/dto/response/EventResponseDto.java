@@ -23,7 +23,7 @@ public class EventResponseDto {
     private String description;
     private Timestamp created;
     private Timestamp updated;
-    private Long creator;
+    private String creator;
     private Timestamp planStart;
     private Timestamp planEnd;
     private Timestamp userStart;

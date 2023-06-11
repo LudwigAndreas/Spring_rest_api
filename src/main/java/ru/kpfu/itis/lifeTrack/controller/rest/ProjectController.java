@@ -23,7 +23,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getProjectsList(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity getProjectsList(@PathVariable(name = "user_id") String userId,
                                          @PathVariable(name = "workflow_id") Long workflowId) {
         try {
             Set<ProjectResponseDto> projectEntitySet = projectService.getProjectList(userId, workflowId);
@@ -34,7 +34,7 @@ public class ProjectController {
     }
 
     @GetMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getProject(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity getProject(@PathVariable(name = "user_id") String userId,
                                      @PathVariable(name = "workflow_id") Long workflowId,
                                      @PathVariable Long id) {
         try {
@@ -45,7 +45,7 @@ public class ProjectController {
     }
 
     @PostMapping()
-    public ResponseEntity insertProject(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity insertProject(@PathVariable(name = "user_id") String userId,
                                         @PathVariable(name = "workflow_id") Long workflowId,
                                         @RequestBody ProjectRequestDto projectRequest) {
         try {
@@ -57,7 +57,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PATCH)
-    public ResponseEntity patchProject(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity patchProject(@PathVariable(name = "user_id") String userId,
                                        @PathVariable(name = "workflow_id") Long workflowId,
                                        @PathVariable Long id,
                                        @RequestBody JsonPatch patch) {
@@ -72,7 +72,7 @@ public class ProjectController {
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity updateProject(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity updateProject(@PathVariable(name = "user_id") String userId,
                                         @PathVariable(name = "workflow_id") Long workflowId,
                                         @PathVariable Long id,
                                         @RequestBody ProjectRequestDto projectRequest) {
@@ -85,7 +85,7 @@ public class ProjectController {
     }
 
     @DeleteMapping(value = "{id}")
-    public ResponseEntity deleteProject(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity deleteProject(@PathVariable(name = "user_id") String userId,
                                         @PathVariable(name = "workflow_id") Long workflowId,
                                         @PathVariable Long id) {
         try {

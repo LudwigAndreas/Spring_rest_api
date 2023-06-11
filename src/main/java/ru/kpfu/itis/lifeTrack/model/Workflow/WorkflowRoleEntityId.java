@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.model.helpers;
+package ru.kpfu.itis.lifeTrack.model.Workflow;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -10,15 +10,15 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleEntityId implements Serializable {
+public class WorkflowRoleEntityId implements Serializable {
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @Column(name = "workflow_id")
     private Long workflowId;
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

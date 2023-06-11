@@ -1,17 +1,16 @@
-package ru.kpfu.itis.lifeTrack.model;
+package ru.kpfu.itis.lifeTrack.model.Workflow;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.kpfu.itis.lifeTrack.model.helpers.AccessRole;
-import ru.kpfu.itis.lifeTrack.model.helpers.RoleEntityId;
+import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 
 @Entity
 @EqualsAndHashCode
 @Table(name = "workflow_user_access_role")
-public class RoleEntity {
+public class WorkflowAccessRoleEntity {
 
     @EmbeddedId
-    private RoleEntityId id;
+    private WorkflowRoleEntityId id;
 
     @ManyToOne
     @MapsId("userId")
@@ -23,26 +22,26 @@ public class RoleEntity {
     @JoinColumn(name = "workflow_id")
     private WorkflowEntity workflow;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private AccessRole role;
+    @ManyToOne
+    @JoinColumn(name = "role")
+    private WorkflowRole role;
 
-    public RoleEntity(UserEntity userEntity, WorkflowEntity workflowEntity, AccessRole role) {
-        this.id = new RoleEntityId(userEntity.getId(), workflowEntity.getId());
+    public WorkflowAccessRoleEntity(UserEntity userEntity, WorkflowEntity workflowEntity, WorkflowRole role) {
+        this.id = new WorkflowRoleEntityId(userEntity.getId(), workflowEntity.getId());
         this.user = userEntity;
         this.workflow = workflowEntity;
         this.role = role;
     }
 
-    public RoleEntity() {
-        this.id = new RoleEntityId();
+    public WorkflowAccessRoleEntity() {
+        this.id = new WorkflowRoleEntityId();
     }
 
-    public RoleEntityId getId() {
+    public WorkflowRoleEntityId getId() {
         return id;
     }
 
-    public void setId(RoleEntityId id) {
+    public void setId(WorkflowRoleEntityId id) {
         this.id = id;
     }
 
@@ -64,11 +63,11 @@ public class RoleEntity {
         this.workflow = workflow;
     }
 
-    public AccessRole getRole() {
+    public WorkflowRole getRole() {
         return role;
     }
 
-    public void setRole(AccessRole role) {
+    public void setRole(WorkflowRole role) {
         this.role = role;
     }
 }

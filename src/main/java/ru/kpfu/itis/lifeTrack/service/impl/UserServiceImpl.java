@@ -8,19 +8,23 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
-import ru.kpfu.itis.lifeTrack.model.UserEntity;
+import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.exception.User.UserAlreadyExistsException;
 import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.UserMapper;
-import ru.kpfu.itis.lifeTrack.repository.RoleRepo;
+import ru.kpfu.itis.lifeTrack.repository.WorkflowAccessRepo;
 import ru.kpfu.itis.lifeTrack.repository.UserRepo;
 import ru.kpfu.itis.lifeTrack.service.UserService;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,7 +34,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserMapper userMapper;
-    private final RoleRepo roleRepo;
+    private final WorkflowAccessRepo roleRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto insertUser(UserEntity user) throws UserAlreadyExistsException {
@@ -43,15 +48,15 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("IN insertUser - user: {} successfully registered", user);
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.entityToDto(userRepo.save(user));
     }
 
     @Override
-    public UserDto getUser(Long id) throws UserNotFoundException {
-        Optional<UserEntity> userEntity = userRepo.findById(id);
+    public UserDto getUser(String userId) throws UserNotFoundException {
+        Optional<UserEntity> userEntity = userRepo.findById(userId);
         if (userEntity.isEmpty()) {
-            log.warn("IN getUser: User with {} id was not found", id);
+            log.warn("IN getUser: User with {} id was not found", userId);
             throw new UserNotFoundException("User with this id does not exist");
         }
 
@@ -63,7 +68,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(String username) throws UserNotFoundException {
+    public UserDto getUserByUsername(String username) throws UserNotFoundException {
         Optional<UserEntity> userEntity = userRepo.findUserEntityByUsername(username);
         if (userEntity.isEmpty()) {
             log.warn("IN getUser: User with {} username was not found", username);
@@ -79,47 +84,48 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long deleteUser(Long id) throws UserNotFoundException {
-        Optional<UserEntity> optionalUser = userRepo.findById(id);
+    public String deleteUser(String userId) throws UserNotFoundException {
+        Optional<UserEntity> optionalUser = userRepo.findById(userId);
         if (optionalUser.isEmpty()) {
-            log.warn("IN deleteUser - user with id: {} was not found", id);
+            log.warn("IN deleteUser - user with id: {} was not found", userId);
             throw new UserNotFoundException("User with this id does not exist");
         }
         roleRepo.deleteAllByUser(optionalUser.get());
-        userRepo.deleteById(id);
+        userRepo.deleteById(userId);
 
-        log.info("IN deleteUser - user with id: {} successfully deleted", id);
+        log.info("IN deleteUser - user with id: {} successfully deleted", userId);
 
-        return id;
+        return userId;
     }
 
     @Override
-    public UserDto patchUser(Long id, JsonPatch jsonPatch) throws UserNotFoundException, JsonPatchException, JsonProcessingException {
-        Optional<UserEntity> optionalUser = userRepo.findById(id);
+    public UserDto patchUser(String userId, JsonPatch jsonPatch) throws UserNotFoundException, JsonPatchException, JsonProcessingException {
+        Optional<UserEntity> optionalUser = userRepo.findById(userId);
         if (optionalUser.isEmpty()) {
-            log.warn("IN patchUser - user with id: {} was not found", id);
+            log.warn("IN patchUser - user with id: {} was not found", userId);
             throw new UserNotFoundException("User with this id does not exist");
         }
         UserEntity user = optionalUser.get();
         user.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
         JsonNode patched = jsonPatch.apply(objectMapper.convertValue(user, JsonNode.class));
 
-        log.info("IN patchUser - user with id: {} successfully patched", id);
+        log.info("IN patchUser - user with id: {} successfully patched", userId);
 
         return userMapper.entityToDto(userRepo.save(objectMapper.treeToValue(patched, UserEntity.class)));
     }
 
     @Override
-    public UserDto updateUser(Long id, UserEntity updated) throws UserNotFoundException {
-        Optional<UserEntity> optionalUser = userRepo.findById(id);
+    public UserDto updateUser(String userId, UserEntity updated) throws UserNotFoundException {
+        Optional<UserEntity> optionalUser = userRepo.findById(userId);
         if (optionalUser.isEmpty()) {
-            log.warn("IN updateUser - user with id: {} was not found", id);
+            log.warn("IN updateUser - user with id: {} was not found", userId);
             throw new UserNotFoundException("User with this id does not exist");
         }
-        updated.setId(id);
+        updated.setId(userId);
 
-        log.info("IN updateUser - user with id: {} was successfully updated", id);
+        log.info("IN updateUser - user with id: {} was successfully updated", userId);
 
         return userMapper.entityToDto(userRepo.save(updated));
     }
+
 }

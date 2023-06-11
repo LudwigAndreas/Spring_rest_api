@@ -22,7 +22,7 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
-    public ResponseEntity getEventsList(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity getEventsList(@PathVariable(name = "user_id") String userId,
                                         @PathVariable(name = "workflow_id") Long workflowId,
                                         @PathVariable(name = "project_id") Long projectId) {
         try {
@@ -34,7 +34,7 @@ public class EventController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getEvent(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity getEvent(@PathVariable(name = "user_id") String userId,
                                    @PathVariable(name = "workflow_id") Long workflowId,
                                    @PathVariable(name = "project_id") Long projectId,
                                    @PathVariable Long id) {
@@ -46,7 +46,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity insertEvent(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity insertEvent(@PathVariable(name = "user_id") String userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
                                       @RequestBody EventRequestDto eventRequestDto) {
@@ -59,7 +59,7 @@ public class EventController {
     }
 
     @PostMapping("{id}/move")
-    public ResponseEntity moveEvent(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity moveEvent(@PathVariable(name = "user_id") String userId,
                                     @PathVariable(name = "workflow_id") Long workflowId,
                                     @PathVariable(name = "project_id") Long projectId,
                                     @PathVariable(name = "id") Long eventId,
@@ -73,7 +73,7 @@ public class EventController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity patchEvent(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity patchEvent(@PathVariable(name = "user_id") String userId,
                                      @PathVariable(name = "workflow_id") Long workflowId,
                                      @PathVariable(name = "project_id") Long projectId,
                                      @PathVariable(name = "id") Long eventId,
@@ -89,7 +89,7 @@ public class EventController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity updateEvent(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity updateEvent(@PathVariable(name = "user_id") String userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
                                       @PathVariable(name = "id") Long eventId,
@@ -103,7 +103,7 @@ public class EventController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteEvent(@PathVariable(name = "user_id") Long userId,
+    public ResponseEntity deleteEvent(@PathVariable(name = "user_id") String userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
                                       @PathVariable(name = "id") Long id) {

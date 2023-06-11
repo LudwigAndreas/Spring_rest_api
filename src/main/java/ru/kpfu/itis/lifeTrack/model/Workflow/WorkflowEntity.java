@@ -1,7 +1,8 @@
-package ru.kpfu.itis.lifeTrack.model;
+package ru.kpfu.itis.lifeTrack.model.Workflow;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.kpfu.itis.lifeTrack.model.ProjectEntity;
 
 import java.util.Objects;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class WorkflowEntity {
     private String color;
 
     @OneToMany(mappedBy = "workflow", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<RoleEntity> authorized;
+    private Set<WorkflowAccessRoleEntity> authorized;
 
     @OneToMany(mappedBy = "workflow", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ProjectEntity> projects;
