@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
-import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
-import ru.kpfu.itis.lifeTrack.exception.Workflow.WorkflowNotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.workflow.WorkflowNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.WorkflowMapper;
 import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowAccessRoleEntity;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
@@ -26,7 +26,6 @@ import ru.kpfu.itis.lifeTrack.service.WorkflowService;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @Slf4j

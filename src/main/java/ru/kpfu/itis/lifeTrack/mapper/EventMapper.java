@@ -6,7 +6,6 @@ import ru.kpfu.itis.lifeTrack.dto.request.EventRequestDto;
 import ru.kpfu.itis.lifeTrack.dto.response.EventResponseDto;
 import ru.kpfu.itis.lifeTrack.model.EventEntity;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = UserMapper.class)

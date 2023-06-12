@@ -3,7 +3,7 @@ package ru.kpfu.itis.lifeTrack.mapper;
 import org.mapstruct.Mapper;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
-import ru.kpfu.itis.lifeTrack.security.jwt.SecurityUserDetails;
+import ru.kpfu.itis.lifeTrack.security.jwt.JwtUserDetails;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -14,7 +14,7 @@ public interface UserMapper {
 
     UserDto entityToDto(UserEntity userEntity);
 
-    SecurityUserDetails entityToDetails(UserEntity userEntity);
+    JwtUserDetails entityToDetails(UserEntity userEntity);
 
-    UserEntity detailsToEntity(SecurityUserDetails securityUserDetails);
+    UserEntity detailsToEntity(JwtUserDetails securityUserDetails);
 }

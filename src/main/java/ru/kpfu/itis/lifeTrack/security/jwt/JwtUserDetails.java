@@ -1,8 +1,6 @@
 package ru.kpfu.itis.lifeTrack.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +11,7 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 @Getter
-public class SecurityUserDetails implements UserDetails {
+public class JwtUserDetails implements UserDetails {
 
     @JsonIgnore
     private final String id;

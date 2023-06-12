@@ -6,28 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.security.LoginDto;
 import ru.kpfu.itis.lifeTrack.dto.security.SignupDto;
 import ru.kpfu.itis.lifeTrack.dto.security.TokenDto;
-import ru.kpfu.itis.lifeTrack.mapper.UserMapper;
-import ru.kpfu.itis.lifeTrack.model.user.RefreshTokenEntity;
-import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
-import ru.kpfu.itis.lifeTrack.repository.RefreshTokenRepo;
-import ru.kpfu.itis.lifeTrack.repository.UserRepo;
-import ru.kpfu.itis.lifeTrack.security.jwt.SecurityUserDetails;
-import ru.kpfu.itis.lifeTrack.security.jwt.SecurityUserDetailsService;
-import ru.kpfu.itis.lifeTrack.security.jwt.JwtHelper;
+import ru.kpfu.itis.lifeTrack.exception.security.TokenException;
+import ru.kpfu.itis.lifeTrack.service.AuthenticationService;
 
-import java.util.Date;
+import javax.security.auth.login.LoginException;
 
 @RestController
 @Slf4j
@@ -35,53 +21,66 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final RefreshTokenRepo refreshTokenRepo;
-    private final UserRepo userRepo;
-    private final JwtHelper jwtHelper;
-    private final PasswordEncoder passwordEncoder;
-    private final SecurityUserDetailsService userDetailsService;
-    private final UserMapper userMapper;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     @Transactional
     public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        SecurityUserDetails userDetails = (SecurityUserDetails) authentication.getPrincipal();
-
-        RefreshTokenEntity refreshToken = new RefreshTokenEntity();
-        refreshToken.setOwner(userMapper.detailsToEntity(userDetails));
-        refreshTokenRepo.save(refreshToken);
-
-        String accessToken = jwtHelper.generateAccessToken(userDetails);
-        String refreshTokenString = jwtHelper.generateRefreshToken(userDetails, refreshToken);
-
-        return new ResponseEntity<>(new TokenDto(userDetails.getId(), accessToken, refreshTokenString), HttpStatus.OK);
+        try {
+            TokenDto token = authenticationService.login(loginDto);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (LoginException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
     @PostMapping("/signup")
     @Transactional
     public ResponseEntity<?> signup(@Valid @RequestBody SignupDto dto) {
-        UserEntity user = new UserEntity();
-        user.setUsername(dto.getUsername());
-        user.setFirstname(dto.getFirstname());
-        user.setLastname(dto.getLastname());
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setCreatedDate(new java.sql.Date(new Date().getTime()));
-        user.setLastUpdatedDate(new java.sql.Date(new Date().getTime()));
-        user = userRepo.save(user);
-        SecurityUserDetails userDetails = userMapper.entityToDetails(user);
+        try {
+            TokenDto token = authenticationService.signup(dto);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (LoginException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        RefreshTokenEntity refreshToken = new RefreshTokenEntity();
-        refreshToken.setOwner(user);
-        refreshTokenRepo.save(refreshToken);
+    }
 
-        String accessToken = jwtHelper.generateAccessToken(userDetails);
-        String refreshTokenString = jwtHelper.generateRefreshToken(userDetails, refreshToken);
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody TokenDto dto) {
+        try {
+            authenticationService.logout(dto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TokenException ignored) {}
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
-        return new ResponseEntity<>(new TokenDto(userDetails.getId(), accessToken, refreshTokenString), HttpStatus.OK);
+    @PostMapping("/logout-all")
+    @Transactional
+    public ResponseEntity<?> logoutAll(@RequestBody TokenDto dto) {
+        try {
+            authenticationService.logoutAll(dto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TokenException ignored) {}
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/access-token")
+    public ResponseEntity<?> accessToken(@RequestBody TokenDto dto) {
+        try {
+            TokenDto token = authenticationService.accessToken(dto);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (TokenException ignored) {}
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody TokenDto dto) {
+        try {
+            TokenDto token = authenticationService.refreshToken(dto);
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (TokenException ignored) {}
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

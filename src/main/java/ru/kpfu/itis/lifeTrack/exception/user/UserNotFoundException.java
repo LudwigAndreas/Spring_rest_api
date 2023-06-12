@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.exception.User;
+package ru.kpfu.itis.lifeTrack.exception.user;
 
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
 

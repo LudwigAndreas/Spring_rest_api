@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.kpfu.itis.lifeTrack.dto.request.EventRequestDto;
 import ru.kpfu.itis.lifeTrack.dto.response.EventResponseDto;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
-import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.EventMapper;
 import ru.kpfu.itis.lifeTrack.model.EventEntity;
 import ru.kpfu.itis.lifeTrack.model.ProjectEntity;
@@ -22,7 +22,6 @@ import ru.kpfu.itis.lifeTrack.repository.UserRepo;
 import ru.kpfu.itis.lifeTrack.service.EventService;
 
 import java.util.Set;
-import java.util.UUID;
 
 
 @Service

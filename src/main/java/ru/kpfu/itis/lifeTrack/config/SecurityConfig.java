@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.kpfu.itis.lifeTrack.security.AccessTokenEntryPoint;
 import ru.kpfu.itis.lifeTrack.filter.AccessTokenFilter;
-import ru.kpfu.itis.lifeTrack.security.jwt.SecurityUserDetailsService;
+import ru.kpfu.itis.lifeTrack.security.jwt.JwtUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -27,7 +27,7 @@ public class SecurityConfig {
 
     private final AccessTokenEntryPoint accessTokenEntryPoint;
     private final AccessTokenFilter accessTokenFilter;
-    private final SecurityUserDetailsService userService;
+    private final JwtUserDetailsService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired

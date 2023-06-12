@@ -34,84 +34,84 @@ public class EventController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getEvent(@PathVariable(name = "user_id") String userId,
+    public ResponseEntity<?> getEvent(@PathVariable(name = "user_id") String userId,
                                    @PathVariable(name = "workflow_id") Long workflowId,
                                    @PathVariable(name = "project_id") Long projectId,
                                    @PathVariable Long id) {
         try {
-            return new ResponseEntity(eventService.getEvent(userId, workflowId, projectId, id), HttpStatus.OK);
+            return new ResponseEntity<>(eventService.getEvent(userId, workflowId, projectId, id), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping
-    public ResponseEntity insertEvent(@PathVariable(name = "user_id") String userId,
+    public ResponseEntity<?> insertEvent(@PathVariable(name = "user_id") String userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
                                       @RequestBody EventRequestDto eventRequestDto) {
         try {
             EventResponseDto eventResponseDto = eventService.insertEvent(userId, workflowId, projectId, eventRequestDto);
-            return new ResponseEntity(eventResponseDto, HttpStatus.OK);
+            return new ResponseEntity<>(eventResponseDto, HttpStatus.OK);
         } catch (NotFoundException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("{id}/move")
-    public ResponseEntity moveEvent(@PathVariable(name = "user_id") String userId,
+    public ResponseEntity<?> moveEvent(@PathVariable(name = "user_id") String userId,
                                     @PathVariable(name = "workflow_id") Long workflowId,
                                     @PathVariable(name = "project_id") Long projectId,
                                     @PathVariable(name = "id") Long eventId,
                                     @RequestParam("destination") String destination) {
         try {
             EventResponseDto responseDto = eventService.moveEvent(userId, workflowId, projectId, eventId, destination);
-            return new ResponseEntity(responseDto, HttpStatus.OK);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (NotFoundException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity patchEvent(@PathVariable(name = "user_id") String userId,
+    public ResponseEntity<?> patchEvent(@PathVariable(name = "user_id") String userId,
                                      @PathVariable(name = "workflow_id") Long workflowId,
                                      @PathVariable(name = "project_id") Long projectId,
                                      @PathVariable(name = "id") Long eventId,
                                      @RequestBody JsonPatch patch) {
         try {
             EventResponseDto responseDto = eventService.patchEvent(userId, workflowId, projectId, eventId, patch);
-            return new ResponseEntity(responseDto, HttpStatus.OK);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (NotFoundException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (JsonPatchException | JsonProcessingException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity updateEvent(@PathVariable(name = "user_id") String userId,
+    public ResponseEntity<?> updateEvent(@PathVariable(name = "user_id") String userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
                                       @PathVariable(name = "id") Long eventId,
                                       @RequestBody EventRequestDto requestDto) {
         try {
             EventResponseDto responseDto = eventService.updateEvent(userId, workflowId, projectId, eventId, requestDto);
-            return new ResponseEntity(responseDto, HttpStatus.OK);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (NotFoundException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteEvent(@PathVariable(name = "user_id") String userId,
+    public ResponseEntity<?> deleteEvent(@PathVariable(name = "user_id") String userId,
                                       @PathVariable(name = "workflow_id") Long workflowId,
                                       @PathVariable(name = "project_id") Long projectId,
                                       @PathVariable(name = "id") Long id) {
         try {
             Long deleted = eventService.deleteEvent(userId, workflowId, projectId, id);
-            return new ResponseEntity(deleted, HttpStatus.OK);
+            return new ResponseEntity<>(deleted, HttpStatus.OK);
         } catch (NotFoundException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

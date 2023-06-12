@@ -10,12 +10,10 @@ import ru.kpfu.itis.lifeTrack.mapper.UserMapper;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.repository.UserRepo;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class SecurityUserDetailsService implements UserDetailsService {
+public class JwtUserDetailsService implements UserDetailsService {
 
     private final UserRepo userRepo;
 
@@ -25,12 +23,12 @@ public class SecurityUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepo.findUserEntityByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username was not found"));
 
-        SecurityUserDetails userDetails = userMapper.entityToDetails(user);
+        JwtUserDetails userDetails = userMapper.entityToDetails(user);
         log.info("IN loadUserByUsername - user with username: {} successfully loaded", username);
         return userDetails;
     }
 
-    public SecurityUserDetails findById(String id) {
+    public JwtUserDetails findById(String id) {
         return userMapper.entityToDetails(userRepo.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("user id not found")));
     }

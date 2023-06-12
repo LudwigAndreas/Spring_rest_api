@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
-import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
 
 import java.util.Set;

@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.exception.User;
+package ru.kpfu.itis.lifeTrack.exception.user;
 
 public class UserAlreadyExistsException extends Exception{
     public UserAlreadyExistsException(String message) {

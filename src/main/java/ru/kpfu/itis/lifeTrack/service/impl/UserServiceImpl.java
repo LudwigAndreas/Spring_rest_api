@@ -8,14 +8,12 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
-import ru.kpfu.itis.lifeTrack.exception.User.UserAlreadyExistsException;
-import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserAlreadyExistsException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.UserMapper;
 import ru.kpfu.itis.lifeTrack.repository.WorkflowAccessRepo;
 import ru.kpfu.itis.lifeTrack.repository.UserRepo;
@@ -24,7 +22,6 @@ import ru.kpfu.itis.lifeTrack.service.UserService;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j

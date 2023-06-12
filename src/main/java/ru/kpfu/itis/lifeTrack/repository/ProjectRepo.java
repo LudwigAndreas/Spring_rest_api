@@ -13,4 +13,6 @@ public interface ProjectRepo extends JpaRepository<ProjectEntity, Long> {
     Optional<ProjectEntity> findByWorkflowIdAndId(Long workflowId, Long projectId);
 
     void deleteAllByWorkflow(WorkflowEntity workflow);
+
+    void deleteByWorkflow_Id(Long workflowId);
 }

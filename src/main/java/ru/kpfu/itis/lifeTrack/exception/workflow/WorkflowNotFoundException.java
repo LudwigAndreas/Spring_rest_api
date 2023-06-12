@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.exception.Workflow;
+package ru.kpfu.itis.lifeTrack.exception.workflow;
 
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
 

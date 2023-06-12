@@ -52,22 +52,22 @@ public class JwtHelper {
                 .build();
     }
 
-    public String generateAccessToken(SecurityUserDetails userDetails) {
+    public String generateAccessToken(JwtUserDetails userDetails) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withSubject(userDetails.getId())
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(new Date().getTime() * accessTokenExpirationMs))
+                .withExpiresAt(new Date(new Date().getTime() + accessTokenExpirationMs))
                 .sign(accessTokenAlgorithm);
     }
 
-    public String generateRefreshToken(SecurityUserDetails userDetails, RefreshTokenEntity refreshToken) {
+    public String generateRefreshToken(JwtUserDetails userDetails, RefreshTokenEntity refreshToken) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withSubject(userDetails.getId())
-                .withClaim("tokenId", refreshToken.getId().toString())
+                .withClaim("tokenId", refreshToken.getId())
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(new Date().getTime() * refreshTokenExpirationMs))
+                .withExpiresAt(new Date(new Date().getTime() + refreshTokenExpirationMs))
                 .sign(refreshTokenAlgorithm);
     }
 
@@ -75,7 +75,7 @@ public class JwtHelper {
         try {
             return Optional.of(accessTokenVerifier.verify(token));
         } catch (JWTVerificationException e) {
-            log.error("invalid access token: {}", e.getMessage());
+            log.error("IN decodeAccessToken: Invalid access token: {}", e.getMessage());
         }
         return Optional.empty();
     }
@@ -84,7 +84,7 @@ public class JwtHelper {
         try {
             return Optional.of(refreshTokenVerifier.verify(token));
         } catch (JWTVerificationException e) {
-            log.error("invalid refresh token: {}", e.getMessage());
+            log.error("IN decodeRefreshToken: Invalid refresh token: {}", e.getMessage());
         }
         return Optional.empty();
     }

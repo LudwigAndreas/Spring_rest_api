@@ -1,4 +1,4 @@
-package ru.kpfu.itis.lifeTrack.exception.Workflow;
+package ru.kpfu.itis.lifeTrack.exception.workflow;
 
 public class WorkflowAlreadyExistsException extends Exception{
     public WorkflowAlreadyExistsException(String message) {

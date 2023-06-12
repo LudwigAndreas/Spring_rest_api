@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
-import ru.kpfu.itis.lifeTrack.exception.User.UserAlreadyExistsException;
-import ru.kpfu.itis.lifeTrack.exception.User.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserAlreadyExistsException;
+import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
 import ru.kpfu.itis.lifeTrack.service.UserService;
 import ru.kpfu.itis.lifeTrack.service.impl.UserServiceImpl;
 
