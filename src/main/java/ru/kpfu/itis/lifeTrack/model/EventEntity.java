@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Table(name = "event")
+@Hidden
 public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -13,7 +13,6 @@ import java.util.Date;
 @Getter
 public class JwtUserDetails implements UserDetails {
 
-    @JsonIgnore
     private final String id;
     private final String username;
     private final String firstname;
@@ -29,6 +28,10 @@ public class JwtUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @JsonIgnore

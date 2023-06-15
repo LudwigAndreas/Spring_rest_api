@@ -1,39 +1,39 @@
 # EternalTimeline API Documentation
 
-## Introduction [introduction]
+## Introduction
 
 This document provides an overview and documentation for the LifeTracker REST API service. It describes the available endpoints, request and response formats, and provides examples for common use cases, security configuration and token usage.
 
-## Table of content [table-of-content]
+## Table of content
 - [Base URL](#base-url)
 - [Authentication](#authentication)
-	- [signup](#signup-endpoint)
-	-	[login](#login-endpoint)
-	- [logout](#logout-endpoint)
-	- [logout-all](#logout-all-endpoint)
-	- [access-token](#access-token-endpoint)
-	- [refresh-token](#refresh-token-endpoint)
+    - [signup](#signup)
+    - [login](#login)
+    - [logout](#logout)
+    - [logout-all](#logout-all)
+    - [access-token](#access-token)
+    - [refresh-token](#refresh-token)
 - [Endpoints](#endpoints)
-	- [User](#user-endpoints)
-		- [delete](#user-delete-endpoint)
-		- [get](#user-get-endpoint)
-		- [patch](#user-patch-endpoint)
-		- [update](#user-update-endpoint)
-	- [Workflow](#workflow-endpoints)
+	- [User](#user)
+		- [delete](#delete-user)
+		- [get](#get-user)
+		- [patch](#patch-user)
+		- [update](#update-user)
+	- [Workflow](#workflow)
 		- [delete](#workflow-delete-endpoint)
 		- [get](#workflow-get-endpoint)
 		- [insert](#workflow-insert-endpoint)
 		- [list](#workflow-list-endpoint)
 		- [patch](#workflow-patch-endpoint)
 		- [update](#workflow-update-endpoint)
-	- [Project](#project-endpoints)
+	- [Project](#project)
 		- [delete](#project-delete-endpoint)
 		- [get](#project-get-endpoint)
 		- [insert](#project-insert-endpoint)
 		- [list](#project-list-endpoint)
 		- [patch](#project-patch-endpoint)
 		- [update](#project-update-endpoint)
-	- [Event](#event-endpoints)
+	- [Event](#event)
 		- [delete](#event-delete-endpoint)
 		- [get](#event-get-endpoint)
 		- [import](#event-import-endpoint)
@@ -46,18 +46,20 @@ This document provides an overview and documentation for the LifeTracker REST AP
 - [Error Handling](#error-handling)
 - [Conclusion](#conclusion)
 
-## Base URL [base-url]
+## Base URL
 
 The base URL for accessing the API service is:
 `https://eternaltimeline.ru/api`
 
-## Authentication [authentication]
+## Authentication
 
 To access the API service, you need to include an authentication token in the request header. The token should be included in the `Authorization` header field using the `Bearer` authentication scheme.
 
 If you are a new user, you need to send a request to "", after which you will get your UserId AccessToken and RefreshToken.
 
-### `POST /auth/signup` [signup-endpoint]
+### Signup 
+`POST /auth/signup`
+
 Endpoint allows you to create a new user. It requires the following parameters:
 
 - `username`: \[string](required) unique username
@@ -91,7 +93,10 @@ Content-Type: application/json
 
 If you already have an account, you can use the login form
 
-### `POST /auth/login` [login-endpoint]
+### Login 
+
+`POST /auth/login`
+
 Endpoint allows you to login. It requires the following parameters:
 
 - `username`: \[string](required) your username
@@ -121,7 +126,10 @@ With each authorization, a new refreshToken is created, which you can use to acc
 
 If you need to log out you can use next endpoint:
 
-### `POST /auth/logout` [logout-endpoint]
+### Logout 
+
+`POST /auth/logout`
+
 Endpoint allows you to logout. It requires the following parameters:
 
 - `user_id`: \[string](required) your user_id
@@ -142,12 +150,14 @@ Content-Type: application/json
 
 #### Response 
 ```json
-
 ```
 
 The query will result in an empty body and the execution status can be tracked via the response status
 
-### `POST /auth/logout-all` [logout-all-endpoint]
+### Logout-all 
+
+`POST /auth/logout-all`
+
 Endpoint allows you to logout all your devices. It requires the following parameters:
 
 - `user_id`: \[string](required) your user_id
@@ -173,7 +183,10 @@ Content-Type: application/json
 
 Works just the same as `/logout` but logout all devices
 
-### `POST /auth/access-token` [access-token-endpoint]
+### Access-token 
+
+`POST /auth/access-token`
+
 Generates new access-token using refresh-token
 
 - `user_id`: \[string](required) your user_id
@@ -199,7 +212,10 @@ Content-Type: application/json
 }
 ```
 
-### `POST /auth/refresh-token` [refresh-token-endpoint]
+### Refresh-token 
+
+`POST /auth/refresh-token`
+
 Generates new access-token and refresh-token using refresh-token
 
 - `user_id`: \[string](required) your user_id
@@ -227,13 +243,15 @@ Content-Type: application/json
 
 
 
-## Endpoints [endpoints]
+## Endpoints
 
-### User [user-endpoints]
+### User
 User contains all info about user.
 
 
-#### `DELETE /users/{userId}` [user-delete-endpoint]
+#### Delete user
+
+`DELETE /users/{userId}`
 
 /users allows you to delete all user data. It supports the following parameters:
 
@@ -253,7 +271,9 @@ Authorization: Bearer <your_token>
 }
 ```
 
-#### `GET /users/{id}` [user-get-endpoint]
+#### Get user 
+
+`GET /users/{id}` 
 
 /users allows you to retrieve a user data. It supports the following parameters:
 
@@ -279,7 +299,9 @@ Authorization: Bearer <your_token>
 }
 ```
 
-#### `PATCH /users/{id}` [user-patch-endpoint]
+#### Patch user 
+
+`PATCH /users/{id}`
 
 /users allows you to change a user data. Supports JSON Patch that specified in RFC 6902 from the IETF.
 
@@ -311,16 +333,18 @@ Authorization: Bearer <your_token>
 }
 ```
 
-#### `PUT /users/{id}` [user-update-endpoint]
+#### Update user 
 
-/users allows you to change whole user data. It supports the following parameters:
+`PUT /users/{id}`
+
+**/users** allows you to change whole user data. It supports the following parameters:
 
 - `userId`: (required) userId as it's provided after authentication.
 - `username`: (optional) userId as it's provided after authentication.
 - `firstname`: (optional) userId as it's provided after authentication.
 - `lastname`: (optional) userId as it's provided after authentication.
 - `email`: (optional) userId as it's provided after authentication.
-- ~~`password`: (optional) userId as it's provided after authentication.~~
+- `password`: (optional) userId as it's provided after authentication.~~
 
 ##### Request
 

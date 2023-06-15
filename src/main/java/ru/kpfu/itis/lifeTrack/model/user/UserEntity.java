@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Slf4j
 @Table(name = "users")
+@Hidden
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

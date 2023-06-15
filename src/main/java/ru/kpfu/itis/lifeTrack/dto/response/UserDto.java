@@ -1,6 +1,7 @@
 package ru.kpfu.itis.lifeTrack.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 

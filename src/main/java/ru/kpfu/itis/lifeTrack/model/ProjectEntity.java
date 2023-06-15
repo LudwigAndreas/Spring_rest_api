@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "project")
 @Builder
+@Hidden
 public class ProjectEntity {
 
     @Id

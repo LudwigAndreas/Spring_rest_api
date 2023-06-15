@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model.Workflow;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "workflow_role_name")
+@Hidden
 public class WorkflowRole {
     @Id
     private Long id;

@@ -1,6 +1,7 @@
 package ru.kpfu.itis.lifeTrack.model;
 
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.sql.Time;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "project_statistics")
+@Hidden
 public class ProjectStatisticEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

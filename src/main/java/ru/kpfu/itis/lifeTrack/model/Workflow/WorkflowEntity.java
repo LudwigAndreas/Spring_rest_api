@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model.Workflow;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.kpfu.itis.lifeTrack.model.ProjectEntity;
@@ -13,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Table(name = "workflow")
+@Hidden
 public class WorkflowEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

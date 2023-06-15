@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model.Workflow;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
@@ -7,6 +8,7 @@ import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 @Entity
 @EqualsAndHashCode
 @Table(name = "workflow_user_access_role")
+@Hidden
 public class WorkflowAccessRoleEntity {
 
     @EmbeddedId
