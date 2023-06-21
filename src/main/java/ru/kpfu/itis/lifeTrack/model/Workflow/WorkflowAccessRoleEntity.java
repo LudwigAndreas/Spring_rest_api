@@ -7,6 +7,8 @@ import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 
 @Entity
 @EqualsAndHashCode
+@Data
+@AllArgsConstructor
 @Table(name = "workflow_user_access_role")
 @Hidden
 public class WorkflowAccessRoleEntity {
@@ -24,8 +26,7 @@ public class WorkflowAccessRoleEntity {
     @JoinColumn(name = "workflow_id")
     private WorkflowEntity workflow;
 
-    @ManyToOne
-    @JoinColumn(name = "role")
+    @Enumerated(EnumType.ORDINAL)
     private WorkflowRole role;
 
     public WorkflowAccessRoleEntity(UserEntity userEntity, WorkflowEntity workflowEntity, WorkflowRole role) {

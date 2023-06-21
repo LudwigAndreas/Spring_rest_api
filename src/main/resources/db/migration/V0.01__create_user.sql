@@ -28,15 +28,10 @@ CREATE TABLE workflow (
    color VARCHAR(7)
 );
 
-CREATE TABLE workflow_role_name (
-    id BIGSERIAL PRIMARY KEY ,
-    name varchar(32) UNIQUE
-);
-
 CREATE TABLE workflow_user_access_role (
     user_id VARCHAR(50) REFERENCES users(id) NOT NULL ,
     workflow_id BIGINT REFERENCES workflow(id) NOT NULL ,
-    role BIGINT REFERENCES workflow_role_name(id) NOT NULL
+    role BIGINT NOT NULL
 );
 
 CREATE SEQUENCE seq_project_id

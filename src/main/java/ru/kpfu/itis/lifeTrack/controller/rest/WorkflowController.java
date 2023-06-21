@@ -14,10 +14,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
 import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
+import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.security.jwt.JwtUserDetails;
 import ru.kpfu.itis.lifeTrack.service.impl.WorkflowServiceImpl;
 
 import java.util.Set;
@@ -27,6 +31,7 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Workflow")
+@PreAuthorize("isAuthenticated()")
 public class WorkflowController {
 
     private final WorkflowServiceImpl workflowService;
@@ -57,13 +62,11 @@ public class WorkflowController {
             }
     )
     @GetMapping
-    public ResponseEntity<?> getWorkflowList(@PathVariable(name = "userId") String userId) {
-        try {
-            Set<WorkflowDto> workflowDtoList = workflowService.getWorkflowList(userId);
-            return new ResponseEntity<>(workflowDtoList, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getWorkflowList(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                             @PathVariable(name = "userId") String userId) throws UserNotFoundException {
+        Set<WorkflowDto> workflowDtoList = workflowService.getWorkflowList(userId);
+        return new ResponseEntity<>(workflowDtoList, HttpStatus.OK);
     }
 
     @Operation(
@@ -92,13 +95,11 @@ public class WorkflowController {
             }
     )
     @GetMapping(value ="{workflowId}")
-    public ResponseEntity<?> getWorkflow(@PathVariable(name = "userId") String userId,
-                                      @PathVariable Long workflowId) {
-        try {
-            return ResponseEntity.ok(workflowService.getWorkflow(userId, workflowId));
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getWorkflow(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                         @PathVariable(name = "userId") String userId,
+                                         @PathVariable Long workflowId) throws NotFoundException {
+        return ResponseEntity.ok(workflowService.getWorkflow(userId, workflowId));
     }
 
     @Operation(
@@ -127,14 +128,12 @@ public class WorkflowController {
             }
     )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> insertWorkflow(@PathVariable(name = "userId") String userId,
-                                         @RequestBody WorkflowDto workflowRequest) {
-        try {
-            WorkflowDto workflow = workflowService.insertWorkflow(userId, workflowRequest);
-            return ResponseEntity.ok(workflow);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> insertWorkflow(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                            @PathVariable(name = "userId") String userId,
+                                            @RequestBody WorkflowDto workflowRequest) throws NotFoundException {
+        WorkflowDto workflow = workflowService.insertWorkflow(userId, workflowRequest);
+        return ResponseEntity.ok(workflow);
     }
 
 
@@ -164,17 +163,13 @@ public class WorkflowController {
             }
     )
     @RequestMapping(value = "{workflowId}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> patchWorkflow(@PathVariable(name = "userId") String userId,
-                                        @PathVariable Long workflowId,
-                                        @RequestBody JsonPatch patch) {
-        try {
-            WorkflowDto workflowDto = workflowService.patchWorkflow(userId, workflowId, patch);
-            return new ResponseEntity<>(workflowDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.BAD_REQUEST);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> patchWorkflow(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                           @PathVariable(name = "userId") String userId,
+                                           @PathVariable Long workflowId,
+                                           @RequestBody JsonPatch patch) throws JsonPatchException, NotFoundException, JsonProcessingException {
+        WorkflowDto workflowDto = workflowService.patchWorkflow(userId, workflowId, patch);
+        return new ResponseEntity<>(workflowDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -203,15 +198,13 @@ public class WorkflowController {
             }
     )
     @PutMapping(value = "{workflowId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateWorkflow(@PathVariable(name = "userId") String userId,
-                                         @PathVariable Long workflowId,
-                                         @RequestBody WorkflowDto workflowRequest) {
-        try {
-            WorkflowDto workflowDto = workflowService.updateWorkflow(userId, workflowId, workflowRequest);
-            return new ResponseEntity<>(workflowDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> updateWorkflow(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                            @PathVariable(name = "userId") String userId,
+                                            @PathVariable Long workflowId,
+                                            @RequestBody WorkflowDto workflowRequest) throws NotFoundException {
+        WorkflowDto workflowDto = workflowService.updateWorkflow(userId, workflowId, workflowRequest);
+        return new ResponseEntity<>(workflowDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -237,12 +230,10 @@ public class WorkflowController {
             }
     )
     @DeleteMapping(value = "{workflowId}")
-    public ResponseEntity<?> deleteWorkflow(@PathVariable(name = "userId") String userId,
-                                         @PathVariable Long workflowId) {
-        try {
-            return new ResponseEntity<>(workflowService.deleteWorkflow(userId, workflowId), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> deleteWorkflow(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                            @PathVariable(name = "userId") String userId,
+                                            @PathVariable Long workflowId) throws NotFoundException {
+        return new ResponseEntity<>(workflowService.deleteWorkflow(userId, workflowId), HttpStatus.OK);
     }
 }

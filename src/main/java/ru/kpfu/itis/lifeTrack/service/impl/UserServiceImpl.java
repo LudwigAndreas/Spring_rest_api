@@ -103,7 +103,6 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User with this id does not exist");
         }
         UserEntity user = optionalUser.get();
-        user.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
         JsonNode patched = jsonPatch.apply(objectMapper.convertValue(user, JsonNode.class));
 
         log.info("IN patchUser - user with id: {} successfully patched", userId);

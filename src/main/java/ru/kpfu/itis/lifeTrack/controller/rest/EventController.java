@@ -12,10 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.request.EventRequestDto;
 import ru.kpfu.itis.lifeTrack.dto.response.EventResponseDto;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
+import ru.kpfu.itis.lifeTrack.security.jwt.JwtUserDetails;
 import ru.kpfu.itis.lifeTrack.service.EventService;
 
 import java.util.Set;
@@ -24,6 +27,7 @@ import java.util.Set;
 @RequestMapping(value = "/users/{userId}/workflows/{workflowId}/projects/{projectId}/events", produces = { "application/json" })
 @RequiredArgsConstructor
 @Tag(name = "Event")
+@PreAuthorize("isAuthenticated()")
 public class EventController {
 
     private final EventService eventService;
@@ -54,15 +58,13 @@ public class EventController {
             }
     )
     @GetMapping
-    public ResponseEntity<?> getEventsList(@PathVariable(name = "userId") String userId,
-                                        @PathVariable(name = "workflowId") Long workflowId,
-                                        @PathVariable(name = "projectId") Long projectId) {
-        try {
-            Set<EventResponseDto> eventResponseSet = eventService.getEventList(userId, workflowId, projectId);
-            return new ResponseEntity<>(eventResponseSet, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getEventsList(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                           @PathVariable(name = "userId") String userId,
+                                           @PathVariable(name = "workflowId") Long workflowId,
+                                           @PathVariable(name = "projectId") Long projectId) throws NotFoundException {
+        Set<EventResponseDto> eventResponseSet = eventService.getEventList(userId, workflowId, projectId);
+        return new ResponseEntity<>(eventResponseSet, HttpStatus.OK);
     }
 
     @Operation(
@@ -91,15 +93,13 @@ public class EventController {
             }
     )
     @GetMapping("{eventId}")
-    public ResponseEntity<?> getEvent(@PathVariable(name = "userId") String userId,
-                                   @PathVariable(name = "workflowId") Long workflowId,
-                                   @PathVariable(name = "projectId") Long projectId,
-                                   @PathVariable(name = "eventId") Long eventId) {
-        try {
-            return new ResponseEntity<>(eventService.getEvent(userId, workflowId, projectId, eventId), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getEvent(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                      @PathVariable(name = "userId") String userId,
+                                      @PathVariable(name = "workflowId") Long workflowId,
+                                      @PathVariable(name = "projectId") Long projectId,
+                                      @PathVariable(name = "eventId") Long eventId) throws NotFoundException {
+        return new ResponseEntity<>(eventService.getEvent(userId, workflowId, projectId, eventId), HttpStatus.OK);
     }
 
     @Operation(
@@ -128,16 +128,14 @@ public class EventController {
             }
     )
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<?> insertEvent(@PathVariable(name = "userId") String userId,
-                                      @PathVariable(name = "workflowId") Long workflowId,
-                                      @PathVariable(name = "projectId") Long projectId,
-                                      @RequestBody EventRequestDto eventRequestDto) {
-        try {
-            EventResponseDto eventResponseDto = eventService.insertEvent(userId, workflowId, projectId, eventRequestDto);
-            return new ResponseEntity<>(eventResponseDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> insertEvent(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                         @PathVariable(name = "userId") String userId,
+                                         @PathVariable(name = "workflowId") Long workflowId,
+                                         @PathVariable(name = "projectId") Long projectId,
+                                         @RequestBody EventRequestDto eventRequestDto) throws NotFoundException {
+        EventResponseDto eventResponseDto = eventService.insertEvent(userId, workflowId, projectId, eventRequestDto);
+        return new ResponseEntity<>(eventResponseDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -167,18 +165,16 @@ public class EventController {
             }
     )
     @PostMapping("{eventId}/move")
-    public ResponseEntity<?> moveEvent(@PathVariable(name = "userId") String userId,
-                                    @PathVariable(name = "workflowId") Long workflowId,
-                                    @PathVariable(name = "projectId") Long projectId,
-                                    @PathVariable(name = "eventId") Long eventId,
-                                    @RequestParam("destination") String destination) {
-        try {
-            EventResponseDto responseDto = eventService.moveEvent(userId, workflowId, projectId, eventId, destination);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
-    }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> moveEvent(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                       @PathVariable(name = "userId") String userId,
+                                       @PathVariable(name = "workflowId") Long workflowId,
+                                       @PathVariable(name = "projectId") Long projectId,
+                                       @PathVariable(name = "eventId") Long eventId,
+                                       @RequestParam("destination") String destination) throws NotFoundException {
+        EventResponseDto responseDto = eventService.moveEvent(userId, workflowId, projectId, eventId, destination);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+}
 
     @Operation(
             operationId = "patch-event",
@@ -206,19 +202,15 @@ public class EventController {
             }
     )
     @PatchMapping(value = "{eventId}", consumes = "application/json")
-    public ResponseEntity<?> patchEvent(@PathVariable(name = "userId") String userId,
-                                     @PathVariable(name = "workflowId") Long workflowId,
-                                     @PathVariable(name = "projectId") Long projectId,
-                                     @PathVariable(name = "eventId") Long eventId,
-                                     @RequestBody JsonPatch patch) {
-        try {
-            EventResponseDto responseDto = eventService.patchEvent(userId, workflowId, projectId, eventId, patch);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.BAD_REQUEST);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> patchEvent(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                        @PathVariable(name = "userId") String userId,
+                                        @PathVariable(name = "workflowId") Long workflowId,
+                                        @PathVariable(name = "projectId") Long projectId,
+                                        @PathVariable(name = "eventId") Long eventId,
+                                        @RequestBody JsonPatch patch) throws JsonPatchException, NotFoundException, JsonProcessingException {
+        EventResponseDto responseDto = eventService.patchEvent(userId, workflowId, projectId, eventId, patch);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -247,17 +239,15 @@ public class EventController {
             }
     )
     @PutMapping(value = "{eventId}", consumes = "application/json")
-    public ResponseEntity<?> updateEvent(@PathVariable(name = "userId") String userId,
-                                      @PathVariable(name = "workflowId") Long workflowId,
-                                      @PathVariable(name = "projectId") Long projectId,
-                                      @PathVariable(name = "eventId") Long eventId,
-                                      @RequestBody EventRequestDto requestDto) {
-        try {
-            EventResponseDto responseDto = eventService.updateEvent(userId, workflowId, projectId, eventId, requestDto);
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> updateEvent(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                         @PathVariable(name = "userId") String userId,
+                                         @PathVariable(name = "workflowId") Long workflowId,
+                                         @PathVariable(name = "projectId") Long projectId,
+                                         @PathVariable(name = "eventId") Long eventId,
+                                         @RequestBody EventRequestDto requestDto) throws NotFoundException {
+        EventResponseDto responseDto = eventService.updateEvent(userId, workflowId, projectId, eventId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -283,16 +273,14 @@ public class EventController {
             }
     )
     @DeleteMapping("{eventId}")
-    public ResponseEntity<?> deleteEvent(@PathVariable(name = "userId") String userId,
-                                      @PathVariable(name = "workflowId") Long workflowId,
-                                      @PathVariable(name = "projectId") Long projectId,
-                                      @PathVariable(name = "eventId") Long eventId) {
-        try {
-            Long deleted = eventService.deleteEvent(userId, workflowId, projectId, eventId);
-            return new ResponseEntity<>(deleted, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> deleteEvent(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                         @PathVariable(name = "userId") String userId,
+                                         @PathVariable(name = "workflowId") Long workflowId,
+                                         @PathVariable(name = "projectId") Long projectId,
+                                         @PathVariable(name = "eventId") Long eventId) throws NotFoundException {
+        Long deleted = eventService.deleteEvent(userId, workflowId, projectId, eventId);
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
 }

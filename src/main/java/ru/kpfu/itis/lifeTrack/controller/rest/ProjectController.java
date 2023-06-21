@@ -13,11 +13,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.request.ProjectRequestDto;
 import ru.kpfu.itis.lifeTrack.dto.response.ProjectResponseDto;
 import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
+import ru.kpfu.itis.lifeTrack.security.jwt.JwtUserDetails;
 import ru.kpfu.itis.lifeTrack.service.ProjectService;
 
 import java.util.Set;
@@ -26,6 +29,7 @@ import java.util.Set;
 @RequestMapping("/users/{userId}/workflows/{workflowId}/projects")
 @RequiredArgsConstructor
 @Tag(name = "Project")
+@PreAuthorize("isAuthenticated()")
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -56,14 +60,12 @@ public class ProjectController {
             }
     )
     @GetMapping(value = "")
-    public ResponseEntity<?> getProjectsList(@PathVariable(name = "userId") String userId,
-                                         @PathVariable(name = "workflowId") Long workflowId) {
-        try {
-            Set<ProjectResponseDto> projectEntitySet = projectService.getProjectList(userId, workflowId);
-            return new ResponseEntity<>(projectEntitySet, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getProjectsList(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                             @PathVariable(name = "userId") String userId,
+                                             @PathVariable(name = "workflowId") Long workflowId) throws NotFoundException {
+        Set<ProjectResponseDto> projectEntitySet = projectService.getProjectList(userId, workflowId);
+        return new ResponseEntity<>(projectEntitySet, HttpStatus.OK);
     }
 
     @Operation(
@@ -92,14 +94,12 @@ public class ProjectController {
             }
     )
     @GetMapping(value = "{projectId}")
-    public ResponseEntity<?> getProject(@PathVariable(name = "userId") String userId,
-                                     @PathVariable(name = "workflowId") Long workflowId,
-                                     @PathVariable Long projectId) {
-        try {
-            return ResponseEntity.ok(projectService.getProject(userId, workflowId, projectId));
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getProject(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                        @PathVariable(name = "userId") String userId,
+                                        @PathVariable(name = "workflowId") Long workflowId,
+                                        @PathVariable Long projectId) throws NotFoundException {
+        return ResponseEntity.ok(projectService.getProject(userId, workflowId, projectId));
     }
 
     @Operation(
@@ -128,15 +128,13 @@ public class ProjectController {
             }
     )
     @PostMapping(consumes = {"application/json"})
-    public ResponseEntity<?> insertProject(@PathVariable(name = "userId") String userId,
-                                        @PathVariable(name = "workflowId") Long workflowId,
-                                        @RequestBody ProjectRequestDto projectRequest) {
-        try {
-            ProjectResponseDto projectDto = projectService.insertProject(userId, workflowId, projectRequest);
-            return ResponseEntity.ok(projectDto);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> insertProject(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                           @PathVariable(name = "userId") String userId,
+                                           @PathVariable(name = "workflowId") Long workflowId,
+                                           @RequestBody ProjectRequestDto projectRequest) throws NotFoundException {
+        ProjectResponseDto projectDto = projectService.insertProject(userId, workflowId, projectRequest);
+        return ResponseEntity.ok(projectDto);
     }
 
     @Operation(
@@ -165,18 +163,14 @@ public class ProjectController {
             }
     )
     @RequestMapping(value = "{projectId}", method = RequestMethod.PATCH, consumes = "application/json")
-    public ResponseEntity<?> patchProject(@PathVariable(name = "userId") String userId,
-                                       @PathVariable(name = "workflowId") Long workflowId,
-                                       @PathVariable Long projectId,
-                                       @RequestBody JsonPatch patch) {
-        try {
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> patchProject(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                          @PathVariable(name = "userId") String userId,
+                                          @PathVariable(name = "workflowId") Long workflowId,
+                                          @PathVariable Long projectId,
+                                          @RequestBody JsonPatch patch) throws JsonPatchException, NotFoundException, JsonProcessingException {
             ProjectResponseDto projectDto = projectService.patchProject(userId, workflowId, projectId, patch);
             return new ResponseEntity<>(projectDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.BAD_REQUEST);
-        }
     }
 
     @Operation(
@@ -205,16 +199,14 @@ public class ProjectController {
             }
     )
     @PutMapping(value = "{projectId}", consumes = "application/json")
-    public ResponseEntity<?> updateProject(@PathVariable(name = "userId") String userId,
-                                        @PathVariable(name = "workflowId") Long workflowId,
-                                        @PathVariable Long projectId,
-                                        @RequestBody ProjectRequestDto projectRequest) {
-        try {
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> updateProject(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                           @PathVariable(name = "userId") String userId,
+                                           @PathVariable(name = "workflowId") Long workflowId,
+                                           @PathVariable Long projectId,
+                                           @RequestBody ProjectRequestDto projectRequest) throws NotFoundException {
             ProjectResponseDto projectDto = projectService.updateProject(userId, workflowId, projectId,  projectRequest);
             return new ResponseEntity<>(projectDto, HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
     }
 
     @Operation(
@@ -240,13 +232,11 @@ public class ProjectController {
             }
     )
     @DeleteMapping(value = "{projectId}")
-    public ResponseEntity<?> deleteProject(@PathVariable(name = "userId") String userId,
-                                        @PathVariable(name = "workflowId") Long workflowId,
-                                        @PathVariable Long projectId) {
-        try {
-            return new ResponseEntity<>(projectService.deleteProject(userId, workflowId, projectId), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> deleteProject(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                           @PathVariable(name = "userId") String userId,
+                                           @PathVariable(name = "workflowId") Long workflowId,
+                                           @PathVariable Long projectId) throws NotFoundException {
+        return new ResponseEntity<>(projectService.deleteProject(userId, workflowId, projectId), HttpStatus.OK);
     }
 }

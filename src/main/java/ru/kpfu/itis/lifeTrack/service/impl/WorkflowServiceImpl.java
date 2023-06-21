@@ -15,6 +15,7 @@ import ru.kpfu.itis.lifeTrack.dto.response.WorkflowDto;
 import ru.kpfu.itis.lifeTrack.exception.workflow.WorkflowNotFoundException;
 import ru.kpfu.itis.lifeTrack.mapper.WorkflowMapper;
 import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowAccessRoleEntity;
+import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowRole;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.model.Workflow.WorkflowEntity;
 import ru.kpfu.itis.lifeTrack.repository.ProjectRepo;
@@ -69,23 +70,21 @@ public class WorkflowServiceImpl implements WorkflowService {
         WorkflowAccessRoleEntity workflowAccessRoleEntity = roleRepo.findByUserIdAndWorkflowId(userId, id)
                 .orElseThrow(() -> new WorkflowNotFoundException("Workflow with this id does not exists"));
 //          TODO add checking that role >= reader
-        WorkflowDto workflowDto = workflowMapper.entityToDto(workflowAccessRoleEntity.getWorkflow());
 
-        return workflowDto;
+        return workflowMapper.entityToDto(workflowAccessRoleEntity.getWorkflow());
     }
 
     @Override
     public WorkflowDto insertWorkflow(String userId, WorkflowDto request) throws NotFoundException {
-//        Optional<UserEntity> optionalUser = userRepo.findById(userId);
-//        if (optionalUser.isEmpty()) {
-//            log.warn("IN insertWorkflow: User with {} id was not found", userId);
-//            throw new UserNotFoundException("User with this id does not exists");
-//        }
-//        WorkflowEntity saved = workflowRepo.save(workflowMapper.dtoToEntity(request));
-//        log.warn("Role connection between: User:" +  optionalUser.get().getId() + " workflow:" + saved.getId() + " role:" + WorkflowRole.owner);
-//        WorkflowDto response = workflowMapper.entityToDto(roleRepo.save(new WorkflowAccessRoleEntity(optionalUser.get(), saved, WorkflowRole.owner)).getWorkflow());
-//        return response;
-        return null;
+        Optional<UserEntity> optionalUser = userRepo.findById(userId);
+        if (optionalUser.isEmpty()) {
+            log.warn("IN insertWorkflow: User with {} id was not found", userId);
+            throw new UserNotFoundException("User with this id does not exists");
+        }
+
+        WorkflowEntity saved = workflowRepo.save(workflowMapper.dtoToEntity(request));
+        WorkflowAccessRoleEntity workflowRole = new WorkflowAccessRoleEntity(optionalUser.get(), saved, WorkflowRole.OWNER);
+        return workflowMapper.entityToDto(roleRepo.save(workflowRole).getWorkflow());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.kpfu.itis.lifeTrack.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,10 +52,11 @@ public class UserEntity {
     @LastModifiedDate
     private Date lastUpdatedDate;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<WorkflowAccessRoleEntity> workflows = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner")
+    @JsonIgnore
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<RefreshTokenEntity> tokens;
 
 }

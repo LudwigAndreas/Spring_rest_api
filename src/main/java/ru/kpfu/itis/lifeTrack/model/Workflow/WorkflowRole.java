@@ -10,17 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Table(name = "workflow_role_name")
-@Hidden
-public class WorkflowRole {
-    @Id
-    private Long id;
-
-    @Column(name = "name", length = 32, nullable = false, unique = true)
-    private String name;
+public enum WorkflowRole {
+    NONE,
+    READER,
+    WRITER,
+    OWNER
 }

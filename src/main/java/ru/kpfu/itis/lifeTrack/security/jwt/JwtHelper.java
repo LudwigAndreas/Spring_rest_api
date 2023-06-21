@@ -36,7 +36,7 @@ public class JwtHelper {
                      @Value("${ru.eternitytimeline.access-token-expiration-minutes}") int accessTokenExpirationMinutes,
                      @Value("${ru.eternitytimeline.issuer}") String issuer) {
         accessTokenExpirationMs = (long) accessTokenExpirationMinutes * 60 * 1000;
-        refreshTokenExpirationMs = (long) refreshTokenExpirationDays * 24 * 60 * 1000;
+        refreshTokenExpirationMs = (long) refreshTokenExpirationDays * 24 * 60 * 60 * 1000;
 
         accessTokenAlgorithm = Algorithm.HMAC256(accessTokenSecret);
         refreshTokenAlgorithm = Algorithm.HMAC256(refreshTokenSecret);

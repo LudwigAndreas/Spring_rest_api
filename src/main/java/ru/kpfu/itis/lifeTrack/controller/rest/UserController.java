@@ -16,12 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kpfu.itis.lifeTrack.dto.response.EventResponseDto;
 import ru.kpfu.itis.lifeTrack.dto.response.UserDto;
 import ru.kpfu.itis.lifeTrack.model.user.UserEntity;
 import ru.kpfu.itis.lifeTrack.exception.user.UserAlreadyExistsException;
 import ru.kpfu.itis.lifeTrack.exception.user.UserNotFoundException;
+import ru.kpfu.itis.lifeTrack.security.jwt.JwtUserDetails;
 import ru.kpfu.itis.lifeTrack.service.UserService;
 import ru.kpfu.itis.lifeTrack.service.impl.UserServiceImpl;
 
@@ -31,6 +33,7 @@ import java.net.http.HttpResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/users", produces = { "application/json" })
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     private final UserService userService;
@@ -61,14 +64,11 @@ public class UserController {
             }
     )
     @GetMapping(value = "{userId}")
-    @PreAuthorize("# == ")
-    public ResponseEntity<?> getUser(@PathVariable(name = "userId") String userId) {
-        try {
-            UserDto userDto = userService.getUser(userId);
-            return new ResponseEntity<>(userDto, HttpStatus.OK);
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY,HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                     @PathVariable(name = "userId") String userId) throws UserNotFoundException {
+        UserDto userDto = userService.getUser(userId);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -98,13 +98,10 @@ public class UserController {
             }
     )
     @PostMapping(consumes = {"application/json"})
-    public ResponseEntity<?> insertUser(@RequestBody UserEntity userEntity) {
-        try {
-            UserDto userDto = userService.insertUser(userEntity);
-            return new ResponseEntity<>(userDto, HttpStatus.OK);
-        } catch (UserAlreadyExistsException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<?> insertUser(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                        @RequestBody UserEntity userEntity) throws UserAlreadyExistsException {
+        UserDto userDto = userService.insertUser(userEntity);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @Operation(
@@ -133,17 +130,12 @@ public class UserController {
             }
     )
     @RequestMapping(value = "{userId}", method = RequestMethod.PATCH, consumes = {"application/json"})
-    @PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<?> patchUser(@PathVariable(name = "userId") String userId,
-                                             @RequestBody JsonPatch jsonPatch) {
-        try {
-            UserDto user = userService.patchUser(userId, jsonPatch);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.BAD_REQUEST);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> patchUser(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                       @PathVariable(name = "userId") String userId,
+                                       @RequestBody JsonPatch jsonPatch) throws UserNotFoundException, JsonPatchException, JsonProcessingException {
+        UserDto user = userService.patchUser(userId, jsonPatch);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @Operation(
@@ -172,15 +164,12 @@ public class UserController {
             }
     )
     @PutMapping(value = "{userId}", consumes = {"application/json"})
-    @PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<?> updateUser(@PathVariable(name = "userId") String userId,
-                                              @RequestBody UserEntity updated) {
-        try {
-            UserDto user = userService.updateUser(userId, updated);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> updateUser(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                        @PathVariable(name = "userId") String userId,
+                                        @RequestBody UserEntity updated) throws UserNotFoundException {
+        UserDto user = userService.updateUser(userId, updated);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @Operation(
@@ -206,13 +195,10 @@ public class UserController {
             }
     )
     @DeleteMapping(value = "{userId}")
-    @PreAuthorize("#userId == authentication.principal.id")
-    public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") String userId) {
-        try {
-            return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
-        } catch (UserNotFoundException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.NOT_FOUND);
-        }
-    }
+    @PreAuthorize("#userDetails.id == #userId")
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal JwtUserDetails userDetails,
+                                        @PathVariable(name = "userId") String userId) throws UserNotFoundException {
+        return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
+}
 
 }

@@ -19,6 +19,6 @@ public class RefreshTokenEntity {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity owner;
 }

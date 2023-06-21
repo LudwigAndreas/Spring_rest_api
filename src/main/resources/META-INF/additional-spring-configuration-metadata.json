@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "ru.eternitytimeline.access-token-expiration-minutes",
-      "type": "java.lang.String",
-      "description": "Access token expiration minutes"
-  }
-] }
