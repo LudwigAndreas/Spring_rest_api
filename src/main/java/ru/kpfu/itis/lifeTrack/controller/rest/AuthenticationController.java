@@ -55,13 +55,9 @@ public class AuthenticationController {
     @SecurityRequirements()
     @PostMapping("/login")
     @Transactional
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
-        try {
-            TokenDto token = authenticationService.login(loginDto);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        } catch (LoginException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) throws LoginException {
+        TokenDto token = authenticationService.login(loginDto);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
 
@@ -89,13 +85,9 @@ public class AuthenticationController {
     @SecurityRequirements()
     @PostMapping("/signup")
     @Transactional
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupDto dto) {
-        try {
-            TokenDto token = authenticationService.signup(dto);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        } catch (LoginException e) {
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupDto dto) throws LoginException {
+        TokenDto token = authenticationService.signup(dto);
+        return new ResponseEntity<>(token, HttpStatus.OK);
 
     }
 
@@ -113,12 +105,9 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody TokenDto dto) {
-        try {
-            authenticationService.logout(dto);
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
-        } catch (TokenException ignored) {}
-        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> logout(@RequestBody TokenDto dto) throws TokenException  {
+        authenticationService.logout(dto);
+        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
     }
 
     @Operation(
@@ -136,12 +125,9 @@ public class AuthenticationController {
     )
     @PostMapping("/logout-all")
     @Transactional
-    public ResponseEntity<?> logoutAll(@RequestBody TokenDto dto) {
-        try {
-            authenticationService.logoutAll(dto);
-            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
-        } catch (TokenException ignored) {}
-        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> logoutAll(@RequestBody TokenDto dto) throws TokenException {
+        authenticationService.logoutAll(dto);
+        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
     }
 
     @Operation(
@@ -166,12 +152,9 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/access-token")
-    public ResponseEntity<?> accessToken(@RequestBody TokenDto dto) {
-        try {
-            TokenDto token = authenticationService.accessToken(dto);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        } catch (TokenException ignored) {}
-        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> accessToken(@RequestBody TokenDto dto) throws TokenException {
+        TokenDto token = authenticationService.accessToken(dto);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @Operation(
@@ -196,7 +179,7 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody TokenDto dto) {
+    public ResponseEntity<?> refreshToken(@RequestBody TokenDto dto) throws TokenException  {
         try {
             TokenDto token = authenticationService.refreshToken(dto);
             return new ResponseEntity<>(token, HttpStatus.OK);

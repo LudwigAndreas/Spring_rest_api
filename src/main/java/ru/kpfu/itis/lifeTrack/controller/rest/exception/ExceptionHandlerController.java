@@ -3,9 +3,6 @@ package ru.kpfu.itis.lifeTrack.controller.rest.exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,6 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import ru.kpfu.itis.lifeTrack.exception.NotFoundException;
+import ru.kpfu.itis.lifeTrack.exception.security.TokenException;
+
+import javax.security.auth.login.LoginException;
 
 @ControllerAdvice
 public class ExceptionHandlerController{
@@ -35,5 +35,12 @@ public class ExceptionHandlerController{
     public ResponseEntity<?> handleAccessDeniedException(
             Exception ex, WebRequest request) {
         return new ResponseEntity<>("", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({ TokenException.class, LoginException.class })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> handleAuthenticationException(
+            Exception ex, WebRequest request) {
+        return new ResponseEntity<>("", HttpStatus.UNAUTHORIZED);
     }
 }
